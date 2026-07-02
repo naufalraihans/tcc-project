@@ -48,3 +48,29 @@ export type Instruktur = {
 	bio: string;
 	created_at: string;
 };
+
+export type Profile = {
+	id: string;
+	full_name: string;
+	phone: string;
+	avatar_url: string;
+	role: string;
+	email?: string;
+	created_at: string;
+};
+
+export type PendaftaranItem = {
+	pendaftaran_id: string;
+	kelas: { id: string; judul: string; slug: string; format: string };
+	status: string;
+	tanggal_daftar: string;
+};
+
+export type Konsultasi = {
+	id: string;
+	topik_konsultasi: string;
+	pesan: string;
+	status: string;
+	balasan: string;
+	created_at: string;
+};
