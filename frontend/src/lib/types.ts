@@ -1,0 +1,50 @@
+export type MiniTopik = { id: string; nama: string; slug: string };
+export type MiniInstruktur = { id: string; nama: string; foto_url: string };
+
+export type Topik = {
+	id: string;
+	nama: string;
+	slug: string;
+	deskripsi: string;
+	icon_url: string;
+	jumlah_kelas?: number;
+	created_at: string;
+};
+
+export type KelasListItem = {
+	id: string;
+	judul: string;
+	slug: string;
+	topik: MiniTopik | null;
+	instruktur: MiniInstruktur | null;
+	format: string;
+	tipe_harga: string;
+	harga: number;
+	jadwal_mulai: string | null;
+	jadwal_selesai: string | null;
+	kuota: number;
+	peserta_terdaftar: number;
+	status: string;
+};
+
+export type Pagination = { page: number; limit: number; total: number; total_pages: number };
+export type PagedKelas = { items: KelasListItem[]; pagination: Pagination };
+
+export type Kelas = KelasListItem & {
+	deskripsi: string;
+	silabus: string;
+	durasi_menit: number;
+	lokasi: string;
+	link_meeting: string;
+	created_at: string;
+	updated_at: string;
+};
+
+export type Instruktur = {
+	id: string;
+	nama: string;
+	jabatan: string;
+	foto_url: string;
+	bio: string;
+	created_at: string;
+};
