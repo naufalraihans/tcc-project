@@ -1,30 +1,17 @@
 <script lang="ts">
-	const metrics = [
-		{ angka: '6.042', label: 'Peserta dalam 3 tahun' },
-		{ angka: '11', label: 'Bidang pelatihan' },
-		{ angka: '100+', label: 'Program di katalog' },
-		{ angka: '6', label: 'Program sertifikasi' }
+	const hlWord = 'ketenagalistrikan'.split('');
+
+	const stats = [
+		{ value: '6.042', label: 'peserta dalam 3 tahun' },
+		{ value: '11', label: 'bidang pelatihan' },
+		{ value: '100+', label: 'program di katalog' },
+		{ value: '6', label: 'program sertifikasi' }
 	];
 
 	const pilar = [
-		{
-			kode: 'S/W',
-			nama: 'Software',
-			sub: 'Learning Program',
-			desc: 'Konten dan kurikulum yang dirancang untuk pencapaian kompetensi yang terukur.'
-		},
-		{
-			kode: 'B/W',
-			nama: 'Brainware',
-			sub: 'Facilitator',
-			desc: 'Instruktur, coach, dan mentor berpengalaman di bidangnya masing-masing.'
-		},
-		{
-			kode: 'H/W',
-			nama: 'Hardware',
-			sub: 'Learning Infrastructure',
-			desc: 'Smart classroom, perangkat teknologi, dan akses digital yang menunjang.'
-		}
+		{ kode: 'S/W', nama: 'Software', sub: 'Learning Program', desc: 'Konten dan kurikulum yang dirancang untuk pencapaian kompetensi yang terukur.' },
+		{ kode: 'B/W', nama: 'Brainware', sub: 'Facilitator', desc: 'Instruktur, coach, dan mentor berpengalaman di bidangnya masing-masing.' },
+		{ kode: 'H/W', nama: 'Hardware', sub: 'Learning Infrastructure', desc: 'Smart classroom, perangkat teknologi, dan akses digital yang menunjang.' }
 	];
 
 	const output = ['Competence', 'Performance', 'Certification'];
@@ -39,74 +26,67 @@
 	];
 
 	const topik = [
-		'Engineering',
-		'Digital Platform',
-		'Manajemen Aset',
-		'Manajemen Risiko',
-		'Manajemen Keuangan',
-		'Sumber Daya Manusia',
-		'EPC',
-		'Renewable Energy',
-		'OHS / K3',
-		'Bimtek',
-		'Workshop'
+		'Engineering', 'Digital Platform', 'Manajemen Aset', 'Manajemen Risiko',
+		'Manajemen Keuangan', 'Sumber Daya Manusia', 'EPC', 'Renewable Energy',
+		'OHS / K3', 'Bimtek', 'Workshop'
 	];
 </script>
 
 <svelte:head>
 	<title>TCC ITPLN — Training &amp; Consulting Center</title>
-	<meta
-		name="description"
-		content="Pusat pelatihan dan konsultasi Institut Teknologi PLN di bidang energi, teknologi berwawasan lingkungan, dan manajemen."
-	/>
+	<meta name="description" content="Pusat pelatihan dan konsultasi Institut Teknologi PLN di bidang energi, teknologi berwawasan lingkungan, dan manajemen." />
 </svelte:head>
 
 <section class="hero">
-	<div class="container hero-grid">
-		<div>
-			<span class="section-tag">Institut Teknologi PLN</span>
-			<h1>Kembangkan Kompetensi Ketenagalistrikan Bersama TCC ITPLN</h1>
-			<p class="section-lead">
+	<div class="blob"></div>
+	<div class="lines"></div>
+
+	<div class="container hero-inner">
+		<span class="eyebrow rise" style="animation-delay:.05s">Institut Teknologi PLN</span>
+
+		<h1 class="hero-title">
+			<span class="line rise" style="animation-delay:.15s">Kembangkan kompetensi</span>
+			<span class="line hl-line">
+				<span class="hl">
+					{#each hlWord as ch, i}
+						<span class="char" style="animation-delay:{350 + i * 35}ms">{ch}</span>
+					{/each}
+				</span>
+			</span>
+		</h1>
+
+		<div class="hero-bottom">
+			<p class="hero-desc rise" style="animation-delay:.3s">
 				Pusat pelatihan dan konsultasi berkelas internasional di bidang energi, teknologi berwawasan
-				lingkungan, dan manajemen — dirancang untuk individu maupun organisasi.
+				lingkungan, dan manajemen — untuk individu maupun organisasi.
 			</p>
-			<div class="hero-actions">
+			<div class="hero-cta rise" style="animation-delay:.4s">
 				<a class="btn btn-primary" href="/kelas">Lihat Program</a>
 				<a class="btn btn-ghost" href="/konsultasi">Ajukan Konsultasi</a>
 			</div>
-			<div class="hero-stats">
-				{#each metrics.slice(0, 3) as m}
-					<div>
-						<div class="angka">{m.angka}</div>
-						<div class="stat-label">{m.label}</div>
-					</div>
-				{/each}
-			</div>
-		</div>
-		<div class="hero-panel" aria-hidden="true">
-			<div class="panel-inner">
-				<div class="panel-kode">TCC</div>
-				<div class="panel-sub">Training &amp; Consulting Center</div>
-			</div>
 		</div>
 	</div>
-</section>
 
-<section class="section metrics-band">
-	<div class="container grid metrics-grid">
-		{#each metrics as m}
-			<div class="metric">
-				<div class="angka">{m.angka}</div>
-				<div class="stat-label">{m.label}</div>
-			</div>
-		{/each}
+	<div class="marquee-wrap">
+		<div class="marquee-track">
+			{#each [0, 1] as g}
+				<div class="marquee-group" aria-hidden={g === 1}>
+					{#each stats as s}
+						<div class="mstat">
+							<span class="mvalue">{s.value}</span>
+							<span class="mlabel">{s.label}</span>
+						</div>
+					{/each}
+				</div>
+			{/each}
+		</div>
 	</div>
 </section>
 
 <section class="section">
 	<div class="container">
-		<span class="section-tag">Kenapa TCC ITPLN</span>
-		<h2 class="section-title">Tiga pilar pembelajaran yang terintegrasi</h2>
+		<span class="eyebrow">Kenapa TCC ITPLN</span>
+		<h2 class="section-title">Tiga pilar pembelajaran<br />yang terintegrasi</h2>
 		<p class="section-lead">
 			Kerangka pembelajaran TCC memadukan konten, pengajar, dan infrastruktur untuk menghasilkan
 			kompetensi yang nyata.
@@ -124,8 +104,8 @@
 		</div>
 
 		<div class="output-row">
-			{#each output as o}
-				<div class="output-item">{o}</div>
+			{#each output as o, i}
+				<div class="output-item"><span class="onum">0{i + 1}</span>{o}</div>
 			{/each}
 		</div>
 	</div>
@@ -133,246 +113,344 @@
 
 <section class="section soft">
 	<div class="container">
-		<span class="section-tag">Kelas Unggulan</span>
-		<h2 class="section-title">Program pilihan dari katalog TCC</h2>
+		<div class="head-row">
+			<div>
+				<span class="eyebrow">Kelas Unggulan</span>
+				<h2 class="section-title">Program pilihan dari katalog</h2>
+			</div>
+			<a class="btn btn-ghost" href="/kelas">Semua Kelas</a>
+		</div>
 
 		<div class="grid unggulan-grid">
 			{#each unggulan as k}
-				<div class="card kelas-card">
+				<a class="card kelas-card" href="/kelas">
 					<span class="badge">{k.bidang}</span>
 					<h3 class="kelas-judul">{k.judul}</h3>
 					<div class="kelas-meta">{k.jp}</div>
-				</div>
+				</a>
 			{/each}
-		</div>
-
-		<div class="center-cta">
-			<a class="btn btn-primary" href="/kelas">Lihat Semua Kelas</a>
 		</div>
 	</div>
 </section>
 
 <section class="section">
 	<div class="container">
-		<span class="section-tag">Bidang Pelatihan</span>
+		<span class="eyebrow">Bidang Pelatihan</span>
 		<h2 class="section-title">Sebelas bidang, satu ekosistem energi</h2>
 		<div class="topik-wrap">
 			{#each topik as t}
-				<a class="topik-chip" href="/topik">{t}</a>
+				<a class="chip" href="/topik">{t}</a>
 			{/each}
 		</div>
 	</div>
 </section>
 
 <section class="section">
-	<div class="container cta-box">
-		<div>
-			<h2 class="cta-title">Butuh solusi pelatihan untuk organisasi Anda?</h2>
-			<p class="cta-lead">
-				Tim TCC ITPLN siap merancang program tailor-made sesuai kebutuhan kompetensi perusahaan.
-			</p>
+	<div class="container">
+		<div class="cta">
+			<div class="cta-lines"></div>
+			<div class="cta-content">
+				<h2 class="cta-title">Butuh solusi pelatihan untuk organisasi Anda?</h2>
+				<p class="cta-lead">
+					Tim TCC ITPLN siap merancang program tailor-made sesuai kebutuhan kompetensi perusahaan.
+				</p>
+				<a class="btn cta-btn" href="/konsultasi">Ajukan Konsultasi</a>
+			</div>
 		</div>
-		<a class="btn btn-primary" href="/konsultasi">Ajukan Konsultasi</a>
 	</div>
 </section>
 
 <style>
 	.hero {
-		padding: 80px 0 48px;
+		position: relative;
+		min-height: 92vh;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		overflow: hidden;
 	}
-	.hero-grid {
-		display: grid;
-		grid-template-columns: 1.15fr 0.85fr;
-		gap: 48px;
-		align-items: center;
+	.blob {
+		position: absolute;
+		right: -180px;
+		top: 44%;
+		transform: translateY(-50%);
+		width: 780px;
+		height: 780px;
+		border-radius: 50%;
+		background: radial-gradient(
+			circle at 32% 30%,
+			var(--sky-blue),
+			var(--navy-teal) 58%,
+			transparent 72%
+		);
+		filter: blur(14px);
+		opacity: 0.32;
+		animation: floatblob 9s ease-in-out infinite;
+		pointer-events: none;
 	}
-	.hero h1 {
-		font-size: clamp(34px, 5vw, 54px);
+	@keyframes floatblob {
+		0%,
+		100% {
+			transform: translateY(-50%) scale(1);
+		}
+		50% {
+			transform: translateY(-54%) scale(1.06);
+		}
+	}
+	.lines {
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		opacity: 0.6;
+		background-image:
+			repeating-linear-gradient(
+				to right,
+				transparent 0,
+				transparent calc(8.33% - 1px),
+				var(--border) calc(8.33% - 1px),
+				var(--border) 8.33%
+			),
+			repeating-linear-gradient(
+				to bottom,
+				transparent 0,
+				transparent calc(25% - 1px),
+				var(--border) calc(25% - 1px),
+				var(--border) 25%
+			);
+		mask-image: radial-gradient(ellipse 80% 70% at 40% 45%, black 40%, transparent 100%);
+	}
+	.hero-inner {
+		position: relative;
+		z-index: 2;
+		padding: 140px 24px 60px;
+		width: 100%;
+	}
+	.hero-title {
+		margin-top: 26px;
+		font-size: clamp(2.8rem, 9vw, 7rem);
 		font-weight: 800;
-		margin-top: 16px;
+		line-height: 0.94;
 	}
-	.hero-actions {
+	.line {
+		display: block;
+	}
+	.hl-line {
+		margin-top: 0.08em;
+	}
+	.hl {
+		position: relative;
+		display: inline-block;
+		background: linear-gradient(120deg, var(--navy-teal), var(--sky-blue));
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+	.char {
+		display: inline-block;
+		white-space: pre;
+		animation: char-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+	}
+	.hero-bottom {
+		display: grid;
+		grid-template-columns: 1.1fr 0.9fr;
+		gap: 40px;
+		align-items: end;
+		margin-top: 48px;
+	}
+	.hero-desc {
+		font-size: 20px;
+		color: var(--muted);
+		max-width: 560px;
+	}
+	.hero-cta {
 		display: flex;
 		gap: 14px;
-		margin-top: 28px;
 		flex-wrap: wrap;
 	}
-	.hero-stats {
+	.hero-cta .btn {
+		height: 54px;
+		padding: 0 30px;
+		font-size: 16px;
+	}
+
+	.marquee-wrap {
+		position: relative;
+		z-index: 2;
+		border-top: 1px solid var(--border);
+		padding: 26px 0;
+		overflow: hidden;
+		mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
+	}
+	.marquee-group {
 		display: flex;
-		gap: 40px;
-		margin-top: 44px;
+		gap: 64px;
+		padding-right: 64px;
 	}
-	.angka {
-		font-family: 'Plus Jakarta Sans', sans-serif;
+	.mstat {
+		display: flex;
+		align-items: baseline;
+		gap: 12px;
+		white-space: nowrap;
+	}
+	.mvalue {
+		font-family: var(--font-display);
 		font-weight: 800;
-		font-size: 30px;
-		color: var(--navy-teal);
+		font-size: 34px;
+		color: var(--ink);
 	}
-	.stat-label {
+	.mlabel {
 		font-size: 14px;
 		color: var(--muted);
-		margin-top: 4px;
-	}
-	.hero-panel {
-		aspect-ratio: 4 / 3;
-		border-radius: 24px;
-		background: linear-gradient(135deg, var(--navy-teal), var(--sky-blue));
-		display: grid;
-		place-items: center;
-		box-shadow: 0 24px 60px rgba(12, 79, 106, 0.25);
-	}
-	.panel-inner {
-		text-align: center;
-		color: #fff;
-	}
-	.panel-kode {
-		font-family: 'Plus Jakarta Sans', sans-serif;
-		font-weight: 800;
-		font-size: 64px;
-		letter-spacing: -0.04em;
-	}
-	.panel-sub {
-		font-size: 15px;
-		opacity: 0.85;
-		margin-top: 4px;
 	}
 
-	.metrics-band {
-		padding: 40px 0;
-		background: var(--off-white);
-		border-top: 1px solid var(--border);
-		border-bottom: 1px solid var(--border);
-	}
-	.metrics-grid {
-		grid-template-columns: repeat(4, 1fr);
-		text-align: center;
-	}
-
-	.soft {
-		background: var(--off-white);
-	}
 	.pilar-grid,
 	.unggulan-grid {
 		grid-template-columns: repeat(3, 1fr);
-		margin-top: 40px;
+		margin-top: 44px;
 	}
 	.pilar-nama {
-		font-size: 22px;
-		margin-top: 18px;
+		font-size: 24px;
+		margin-top: 20px;
 	}
 	.pilar-sub {
 		color: var(--sky-blue);
 		font-weight: 600;
 		font-size: 14px;
 		margin-top: 4px;
+		font-family: var(--font-mono);
 	}
 	.pilar-desc {
 		color: var(--muted);
-		margin-top: 12px;
+		margin-top: 14px;
 		font-size: 15px;
 	}
 	.output-row {
 		display: flex;
 		gap: 16px;
-		margin-top: 24px;
+		margin-top: 22px;
 		flex-wrap: wrap;
 	}
 	.output-item {
 		flex: 1;
-		min-width: 160px;
-		text-align: center;
-		padding: 18px;
+		min-width: 180px;
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		padding: 22px 24px;
 		border-radius: var(--radius-sm);
-		background: var(--navy-teal);
+		background: var(--ink);
 		color: #fff;
-		font-family: 'Plus Jakarta Sans', sans-serif;
+		font-family: var(--font-display);
 		font-weight: 700;
+		font-size: 17px;
+	}
+	.onum {
+		font-family: var(--font-mono);
+		font-size: 13px;
+		font-weight: 500;
+		color: var(--sky-blue);
 	}
 
+	.soft {
+		background: var(--off-white);
+		border-top: 1px solid var(--border);
+		border-bottom: 1px solid var(--border);
+	}
+	.head-row {
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-end;
+		gap: 20px;
+		flex-wrap: wrap;
+	}
 	.kelas-card {
 		display: flex;
 		flex-direction: column;
 	}
 	.kelas-judul {
-		font-size: 19px;
-		margin-top: 16px;
+		font-size: 20px;
+		margin-top: 18px;
 		flex: 1;
 	}
 	.kelas-meta {
-		margin-top: 16px;
+		margin-top: 18px;
 		font-weight: 600;
 		color: var(--cool-slate);
-		font-size: 14px;
-	}
-	.center-cta {
-		margin-top: 40px;
-		text-align: center;
+		font-family: var(--font-mono);
+		font-size: 13px;
 	}
 
 	.topik-wrap {
 		display: flex;
 		flex-wrap: wrap;
 		gap: 12px;
-		margin-top: 32px;
+		margin-top: 36px;
 	}
-	.topik-chip {
-		padding: 10px 18px;
-		border-radius: var(--radius-full);
-		border: 1px solid var(--border);
+	.chip {
+		padding: 11px 20px;
+		border-radius: var(--radius-pill);
+		border: 1px solid var(--border-strong);
 		background: var(--white);
 		font-weight: 500;
 		color: var(--cool-slate);
-		transition: 0.18s ease;
+		transition: all 0.2s ease;
 	}
-	.topik-chip:hover {
-		border-color: var(--sky-blue);
-		color: var(--sky-blue);
+	.chip:hover {
+		border-color: var(--navy-teal);
+		color: var(--navy-teal);
+		transform: translateY(-2px);
 	}
 
-	.cta-box {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		gap: 32px;
-		padding: 48px;
-		border-radius: 24px;
-		background: linear-gradient(135deg, var(--navy-teal), var(--sky-blue));
-		color: #fff;
+	.cta {
+		position: relative;
+		overflow: hidden;
+		border-radius: 28px;
+		background: linear-gradient(135deg, var(--ink), var(--navy-teal) 70%, var(--sky-blue));
+		padding: 72px 56px;
+	}
+	.cta-lines {
+		position: absolute;
+		inset: 0;
+		opacity: 0.12;
+		background-image:
+			repeating-linear-gradient(to right, transparent 0, transparent 79px, #fff 79px, #fff 80px);
+	}
+	.cta-content {
+		position: relative;
+		max-width: 640px;
 	}
 	.cta-title {
 		color: #fff;
-		font-size: clamp(24px, 3vw, 32px);
+		font-size: clamp(26px, 3.4vw, 38px);
 	}
 	.cta-lead {
-		margin-top: 10px;
-		opacity: 0.9;
-		max-width: 520px;
+		color: rgba(255, 255, 255, 0.82);
+		margin-top: 14px;
+		font-size: 17px;
 	}
-	.cta-box .btn-primary {
+	.cta-btn {
+		margin-top: 28px;
 		background: #fff;
-		color: var(--navy-teal);
-		white-space: nowrap;
+		color: var(--ink);
+		height: 54px;
+		padding: 0 30px;
+	}
+	.cta-btn:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
 	}
 
 	@media (max-width: 900px) {
-		.hero-grid {
+		.hero-bottom {
 			grid-template-columns: 1fr;
-		}
-		.hero-panel {
-			display: none;
+			gap: 28px;
 		}
 		.pilar-grid,
 		.unggulan-grid {
 			grid-template-columns: 1fr;
 		}
-		.metrics-grid {
-			grid-template-columns: repeat(2, 1fr);
-			gap: 28px;
-		}
-		.cta-box {
-			flex-direction: column;
-			align-items: flex-start;
-			padding: 32px;
+		.cta {
+			padding: 44px 28px;
 		}
 	}
 </style>

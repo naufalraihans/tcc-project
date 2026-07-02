@@ -17,7 +17,7 @@
 	{@render children()}
 {:else}
 	<Navbar />
-	<main>
+	<main class="noise">
 		{@render children()}
 	</main>
 	<Footer />
