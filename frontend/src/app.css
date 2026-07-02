@@ -1,0 +1,151 @@
+:root {
+	--navy-teal: #0c4f6a;
+	--sky-blue: #1a8db2;
+	--cool-slate: #2e4a5a;
+	--off-white: #f4f7fa;
+	--white: #ffffff;
+	--charcoal: #1a1a2e;
+	--muted: #6b7280;
+	--border: #e2e8f0;
+	--success: #1e7b45;
+	--radius: 16px;
+	--radius-sm: 8px;
+	--radius-full: 9999px;
+	--maxw: 1200px;
+}
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+html {
+	scroll-behavior: smooth;
+}
+
+body {
+	font-family: 'Inter', system-ui, sans-serif;
+	color: var(--charcoal);
+	background: var(--white);
+	line-height: 1.6;
+	-webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4 {
+	font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+	color: var(--charcoal);
+	line-height: 1.15;
+	letter-spacing: -0.02em;
+}
+
+a {
+	color: inherit;
+	text-decoration: none;
+}
+
+.container {
+	max-width: var(--maxw);
+	margin: 0 auto;
+	padding: 0 24px;
+}
+
+.section {
+	padding: 88px 0;
+}
+
+.section-tag {
+	font-size: 13px;
+	font-weight: 600;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: var(--sky-blue);
+}
+
+.section-title {
+	font-size: clamp(28px, 4vw, 40px);
+	font-weight: 700;
+	margin-top: 12px;
+}
+
+.section-lead {
+	color: var(--muted);
+	max-width: 620px;
+	margin-top: 14px;
+	font-size: 17px;
+}
+
+.btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	font-weight: 600;
+	font-size: 15px;
+	border-radius: var(--radius-sm);
+	padding: 12px 22px;
+	cursor: pointer;
+	border: 1px solid transparent;
+	transition: 0.18s ease;
+	font-family: 'Inter', sans-serif;
+}
+
+.btn-primary {
+	background: var(--navy-teal);
+	color: var(--white);
+}
+
+.btn-primary:hover {
+	background: var(--cool-slate);
+}
+
+.btn-ghost {
+	background: transparent;
+	color: var(--navy-teal);
+	border-color: var(--border);
+}
+
+.btn-ghost:hover {
+	border-color: var(--sky-blue);
+	color: var(--sky-blue);
+}
+
+.badge {
+	display: inline-flex;
+	align-items: center;
+	padding: 5px 12px;
+	border-radius: var(--radius-full);
+	font-size: 13px;
+	font-weight: 600;
+	background: var(--off-white);
+	color: var(--cool-slate);
+	border: 1px solid var(--border);
+}
+
+.card {
+	background: var(--white);
+	border: 1px solid var(--border);
+	border-radius: var(--radius);
+	padding: 28px;
+	transition:
+		transform 0.18s ease,
+		box-shadow 0.18s ease;
+}
+
+.card:hover {
+	transform: translateY(-3px);
+	box-shadow: 0 12px 32px rgba(12, 79, 106, 0.08);
+}
+
+.grid {
+	display: grid;
+	gap: 20px;
+}
+
+@media (max-width: 720px) {
+	.section {
+		padding: 56px 0;
+	}
+}

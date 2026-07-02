@@ -1,1 +1,5 @@
 .claude/
+
+# designUI reference apps — deps & build output, never track
+node_modules/
+.next/
