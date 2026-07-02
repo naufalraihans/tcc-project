@@ -26,4 +26,7 @@ seed:
 
 refresh: migrate-down migrate-up seed
 
-.PHONY: run build tidy test migrate-up migrate-down seed refresh
+kill:
+	-@powershell -NoProfile -Command "Stop-Process -Id (Get-NetTCPConnection -LocalPort 5173,8080 -State Listen -ErrorAction SilentlyContinue).OwningProcess -Force -ErrorAction SilentlyContinue; Write-Host 'port 5173 & 8080 dibersihkan'"
+
+.PHONY: run build tidy test migrate-up migrate-down seed refresh kill
