@@ -94,13 +94,13 @@
 		align-items: center;
 	}
 	.logo img {
-		height: 40px;
+		height: 56px;
 		width: auto;
 		display: block;
 		transition: height 0.4s ease;
 	}
 	nav.pill .logo img {
-		height: 32px;
+		height: 44px;
 	}
 	.links {
 		display: flex;

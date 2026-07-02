@@ -30,6 +30,15 @@
 		'Manajemen Keuangan', 'Sumber Daya Manusia', 'EPC', 'Renewable Energy',
 		'OHS / K3', 'Bimtek', 'Workshop'
 	];
+
+	const partners = [
+		{ src: '/partners/danantara.svg', alt: 'Danantara' },
+		{ src: '/partners/pln.png', alt: 'PLN' },
+		{ src: '/partners/pln-icon-plus.png', alt: 'PLN Icon Plus' },
+		{ src: '/partners/pln-ips.png', alt: 'PLN Indonesia Power Services' },
+		{ src: '/partners/pln-npc.png', alt: 'PLN Nusantara Power Construction' },
+		{ src: '/partners/pln-mctn.png', alt: 'PLN MCTN' }
+	];
 </script>
 
 <svelte:head>
@@ -76,6 +85,27 @@
 							<span class="mvalue">{s.value}</span>
 							<span class="mlabel">{s.label}</span>
 						</div>
+					{/each}
+				</div>
+			{/each}
+		</div>
+	</div>
+</section>
+
+<section class="trusted">
+	<div class="container">
+		<div class="trusted-label">
+			<span class="tline"></span>
+			Dipercaya oleh Instansi Engineering dan Administrasi
+			<span class="tline"></span>
+		</div>
+	</div>
+	<div class="logo-marquee">
+		<div class="marquee-track">
+			{#each [0, 1] as g}
+				<div class="logo-group" aria-hidden={g === 1}>
+					{#each partners as p}
+						<div class="logo-item"><img src={p.src} alt={p.alt} /></div>
 					{/each}
 				</div>
 			{/each}
@@ -301,6 +331,51 @@
 	.mlabel {
 		font-size: 14px;
 		color: var(--muted);
+	}
+
+	.trusted {
+		padding: 56px 0 52px;
+		background: var(--white);
+		border-top: 1px solid var(--border);
+		border-bottom: 1px solid var(--border);
+	}
+	.trusted-label {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 18px;
+		font-family: var(--font-mono);
+		font-size: 13px;
+		letter-spacing: 0.02em;
+		color: var(--muted);
+		text-align: center;
+	}
+	.tline {
+		height: 1px;
+		width: 44px;
+		background: var(--border-strong);
+		flex-shrink: 0;
+	}
+	.logo-marquee {
+		margin-top: 34px;
+		overflow: hidden;
+		mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
+	}
+	.logo-group {
+		display: flex;
+		align-items: center;
+		gap: 72px;
+		padding-right: 72px;
+	}
+	.logo-item {
+		display: flex;
+		align-items: center;
+	}
+	.logo-item img {
+		height: 40px;
+		width: auto;
+		object-fit: contain;
+		opacity: 0.85;
 	}
 
 	.pilar-grid,
