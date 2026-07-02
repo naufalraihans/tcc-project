@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TCC ITPLN — Training and Consultant Center</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --navy-teal: #0C4F6A;
+    --sky-blue: #1A8DB2;
+    --cool-slate: #2E4A5A;
+    --off-white: #F4F7FA;
+    --white: #FFFFFF;
+    --charcoal: #1A1A2E;
+    --muted: #6B7280;
+    --border: #E2E8F0;
+    --radius: 16px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', sans-serif;
+    color: var(--charcoal);
+    background: var(--white);
+    line-height: 1.6;
+  }
+  h1, h2, h3, h4 { font-family: 'Plus Jakarta Sans', sans-serif; color: var(--charcoal); line-height: 1.2; }
+  a { text-decoration: none; color: inherit; }
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+  /* ---------- Header ---------- */
+  header {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav { display: flex; align-items: center; justify-content: space-between; height: 68px; }
+  .logo { display: flex; align-items: center; gap: 10px; font-family: 'Plus Jakarta Sans'; font-weight: 800; font-size: 20px; color: var(--navy-teal); }
+  .logo .mark { width: 34px; height: 34px; border-radius: 9px; background: var(--navy-teal); color: #fff; display: grid; place-items: center; font-size: 14px; letter-spacing: -0.5px; }
+  .logo img { height: 30px; width: auto; display: block; }
+  .logo .divider { width: 1px; height: 24px; background: var(--border); }
+  .logo .sub { font-size: 13px; font-weight: 600; color: var(--muted); font-family: 'Inter'; }
+  .nav-links { display: flex; gap: 32px; }
+  .nav-links a { font-size: 15px; color: var(--cool-slate); font-weight: 500; }
+  .nav-links a:hover { color: var(--sky-blue); }
+  .nav-actions { display: flex; gap: 12px; align-items: center; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; font-size: 15px; border-radius: 10px; padding: 10px 18px; cursor: pointer; border: 1px solid transparent; transition: .18s; }
+  .btn-primary { background: var(--navy-teal); color: #fff; }
+  .btn-primary:hover { background: var(--cool-slate); }
+  .btn-ghost { background: transparent; color: var(--navy-teal); border-color: var(--border); }
+  .btn-ghost:hover { border-color: var(--sky-blue); color: var(--sky-blue); }
+  .menu-toggle { display: none; background: none; border: none; cursor: pointer; padding: 8px; }
+
+  /* ---------- Hero ---------- */
+  .hero { padding: 72px 0 40px; }
+  .hero-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 48px; align-items: center; }
+  .pill { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--sky-blue); background: var(--off-white); border: 1px solid var(--border); padding: 6px 14px; border-radius: 999px; margin-bottom: 22px; }
+  .pill .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--sky-blue); }
+  .hero h1 { font-size: 52px; font-weight: 800; letter-spacing: -1.5px; }
+  .hero h1 .accent { color: var(--navy-teal); }
+  .hero p { font-size: 18px; color: var(--muted); margin: 22px 0 32px; max-width: 520px; }
+  .hero-cta { display: flex; gap: 14px; }
+  .hero-art {
+    background: linear-gradient(150deg, var(--navy-teal), var(--sky-blue));
+    border-radius: 24px; padding: 32px; color: #fff;
+    box-shadow: 0 24px 60px -20px rgba(12,79,106,0.5);
+  }
+  .hero-art .label { font-size: 13px; opacity: .8; font-weight: 500; }
+  .hero-art .big { font-family: 'Plus Jakarta Sans'; font-size: 40px; font-weight: 800; margin: 4px 0 24px; }
+  .mini-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .mini-card { background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.18); border-radius: 12px; padding: 14px; }
+  .mini-card .n { font-family: 'Plus Jakarta Sans'; font-size: 24px; font-weight: 700; }
+  .mini-card .t { font-size: 12px; opacity: .85; }
+
+  /* ---------- Trusted by ---------- */
+  .trusted { padding: 8px 0 40px; }
+  .trusted .label { text-align: center; font-size: 13px; font-weight: 600; letter-spacing: 0.4px; text-transform: uppercase; color: var(--muted); margin-bottom: 26px; }
+  .logo-strip { display: flex; align-items: center; justify-content: center; gap: 48px; flex-wrap: wrap; }
+  .logo-strip img { height: 42px; width: auto; max-width: 150px; object-fit: contain; filter: grayscale(1); opacity: 0.55; transition: .25s; }
+  .logo-strip img:hover { filter: grayscale(0); opacity: 1; }
+
+  /* ---------- Section heading ---------- */
+  .section { padding: 56px 0; }
+  .section-head { display: flex; align-items: end; justify-content: space-between; margin-bottom: 28px; flex-wrap: wrap; gap: 12px; }
+  .section-head h2 { font-size: 32px; font-weight: 700; letter-spacing: -0.8px; }
+  .section-head p { color: var(--muted); margin-top: 6px; }
+  .link-arrow { color: var(--sky-blue); font-weight: 600; font-size: 15px; display: inline-flex; align-items: center; gap: 6px; }
+
+  /* ---------- Bento grid ---------- */
+  .bento { display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 180px; gap: 16px; }
+  .bento-card {
+    background: var(--white); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 22px; display: flex; flex-direction: column; justify-content: space-between;
+    transition: .2s; overflow: hidden;
+  }
+  .bento-card:hover { border-color: var(--sky-blue); box-shadow: 0 12px 30px -14px rgba(12,79,106,0.25); transform: translateY(-2px); }
+  .b-2x2 { grid-column: span 2; grid-row: span 2; }
+  .b-2x1 { grid-column: span 2; }
+  .b-1x2 { grid-row: span 2; }
+  .card-eyebrow { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.6px; color: var(--sky-blue); }
+  .bento-card h3 { font-size: 20px; font-weight: 700; margin-top: 6px; }
+  .bento-card .desc { color: var(--muted); font-size: 14px; margin-top: 8px; }
+  .filled { background: var(--navy-teal); border-color: var(--navy-teal); color: #fff; }
+  .filled h3, .filled .card-eyebrow { color: #fff; }
+  .filled .desc { color: rgba(255,255,255,0.82); }
+  .filled .card-eyebrow { color: rgba(255,255,255,0.7); }
+  .slate { background: var(--off-white); }
+  .stat-big { font-family: 'Plus Jakarta Sans'; font-size: 46px; font-weight: 800; line-height: 1; }
+
+  /* ---------- Class cards ---------- */
+  .class-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .class-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; transition: .2s; display: flex; flex-direction: column; }
+  .class-card:hover { border-color: var(--sky-blue); box-shadow: 0 16px 34px -18px rgba(12,79,106,0.3); transform: translateY(-3px); }
+  .class-thumb { height: 132px; background: linear-gradient(135deg, var(--navy-teal), var(--sky-blue)); position: relative; }
+  .class-thumb.alt { background: linear-gradient(135deg, var(--cool-slate), var(--navy-teal)); }
+  .class-thumb.alt2 { background: linear-gradient(135deg, var(--sky-blue), #4bb3d1); }
+  .badges { position: absolute; top: 12px; left: 12px; display: flex; gap: 8px; }
+  .badge { font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 999px; background: rgba(255,255,255,0.95); color: var(--navy-teal); }
+  .badge.free { background: #E6F4EA; color: #1E7B45; }
+  .badge.paid { background: #FFF; color: var(--navy-teal); }
+  .class-body { padding: 18px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+  .topic-tag { font-size: 12px; font-weight: 600; color: var(--sky-blue); }
+  .class-body h3 { font-size: 17px; font-weight: 700; }
+  .class-meta { font-size: 13px; color: var(--muted); display: flex; flex-direction: column; gap: 4px; }
+  .class-meta span { display: flex; align-items: center; gap: 7px; }
+  .class-foot { margin-top: auto; padding-top: 14px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .price { font-family: 'Plus Jakarta Sans'; font-weight: 700; color: var(--navy-teal); font-size: 17px; }
+  .price.free { color: #1E7B45; }
+  .quota { font-size: 12px; color: var(--muted); }
+  svg { flex-shrink: 0; }
+
+  /* ---------- Topics ---------- */
+  .topic-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .topic-item { border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; display: flex; align-items: center; gap: 16px; transition: .2s; background: var(--white); }
+  .topic-item:hover { background: var(--off-white); border-color: var(--sky-blue); }
+  .topic-icon { width: 46px; height: 46px; border-radius: 12px; background: var(--off-white); color: var(--navy-teal); display: grid; place-items: center; flex-shrink: 0; }
+  .topic-item h4 { font-size: 16px; font-weight: 700; }
+  .topic-item p { font-size: 13px; color: var(--muted); }
+
+  /* ---------- Consult CTA ---------- */
+  .consult { background: var(--navy-teal); border-radius: 24px; padding: 56px; color: #fff; display: grid; grid-template-columns: 1.3fr 0.7fr; gap: 40px; align-items: center; }
+  .consult h2 { color: #fff; font-size: 34px; letter-spacing: -0.8px; }
+  .consult p { color: rgba(255,255,255,0.82); margin-top: 14px; font-size: 17px; max-width: 480px; }
+  .consult .btn-primary { background: #fff; color: var(--navy-teal); }
+  .consult .btn-primary:hover { background: var(--off-white); }
+  .consult-right { display: flex; justify-content: flex-end; }
+
+  /* ---------- Footer ---------- */
+  footer { border-top: 1px solid var(--border); padding: 48px 0 32px; background: var(--off-white); margin-top: 40px; }
+  .foot-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 32px; }
+  .foot-grid h5 { font-family: 'Plus Jakarta Sans'; font-size: 14px; font-weight: 700; margin-bottom: 14px; }
+  .foot-grid a, .foot-grid p { display: block; color: var(--muted); font-size: 14px; margin-bottom: 8px; }
+  .foot-grid a:hover { color: var(--sky-blue); }
+  .foot-bottom { border-top: 1px solid var(--border); margin-top: 32px; padding-top: 22px; display: flex; justify-content: space-between; color: var(--muted); font-size: 13px; flex-wrap: wrap; gap: 8px; }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 900px) {
+    .hero-grid { grid-template-columns: 1fr; gap: 32px; }
+    .hero h1 { font-size: 40px; }
+    .bento { grid-template-columns: repeat(2, 1fr); }
+    .b-2x2, .b-2x1 { grid-column: span 2; }
+    .class-grid, .topic-grid { grid-template-columns: repeat(2, 1fr); }
+    .consult { grid-template-columns: 1fr; padding: 36px; }
+    .consult-right { justify-content: flex-start; }
+    .foot-grid { grid-template-columns: 1fr 1fr; }
+    .nav-links { display: none; }
+    .menu-toggle { display: block; }
+  }
+  @media (max-width: 560px) {
+    .hero h1 { font-size: 32px; }
+    .bento, .class-grid, .topic-grid { grid-template-columns: 1fr; }
+    .b-2x2, .b-2x1 { grid-column: span 1; grid-row: span 1; }
+    .bento { grid-auto-rows: auto; }
+    .bento-card { min-height: 150px; }
+    .section-head h2 { font-size: 26px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= HEADER ================= -->
+<header>
+  <div class="container nav">
+    <a href="#" class="logo"><img src="logoITPLN.png" alt="Institut Teknologi PLN" /></a>
+    <nav class="nav-links">
+      <a href="#kelas">Kelas</a>
+      <a href="#topik">Topik</a>
+      <a href="#konsultasi">Konsultasi</a>
+      <a href="#tentang">Tentang</a>
+    </nav>
+    <div class="nav-actions">
+      <a class="btn btn-ghost" href="#">Masuk</a>
+      <a class="btn btn-primary" href="#">Daftar</a>
+      <button class="menu-toggle" aria-label="Menu" onclick="document.querySelector('.nav-links').style.display='flex'">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0C4F6A" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ================= HERO ================= -->
+<section class="hero">
+  <div class="container hero-grid">
+    <div>
+      <span class="pill"><span class="dot"></span> Training &amp; Consultant Center — ITPLN</span>
+      <h1>Kembangkan Kompetensi <span class="accent">Ketenagalistrikan</span> Anda</h1>
+      <p>Platform pelatihan dan konsultasi profesional di bawah naungan Institut Teknologi PLN. Kelas online &amp; offline, gratis maupun bersertifikat, dibimbing tenaga ahli.</p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="#kelas">Lihat Program</a>
+        <a class="btn btn-ghost" href="#konsultasi">Ajukan Konsultasi</a>
+      </div>
+    </div>
+    <div class="hero-art">
+      <div class="label">Peserta aktif bulan ini</div>
+      <div class="big">2.480+</div>
+      <div class="mini-cards">
+        <div class="mini-card"><div class="n">48</div><div class="t">Kelas Aktif</div></div>
+        <div class="mini-card"><div class="n">32</div><div class="t">Instruktur Ahli</div></div>
+        <div class="mini-card"><div class="n">12</div><div class="t">Topik Pelatihan</div></div>
+        <div class="mini-card"><div class="n">96%</div><div class="t">Tingkat Kelulusan</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TRUSTED BY ================= -->
+<section class="trusted container">
+  <div class="label">Dipercaya oleh institusi dan mitra industri energi</div>
+  <div class="logo-strip">
+    <img src="logoITPLN.png" alt="Institut Teknologi PLN" />
+    <img src="danantara-indonesia.svg" alt="Danantara Indonesia" />
+    <img src="pln_nusantara_power.png" alt="PLN Nusantara Power" />
+    <img src="pln_indonesia_renewable_energy.png" alt="PLN Indonesia Renewable Energy" />
+    <img src="PLN_Nusantara_Power_Construction.png" alt="PLN Nusantara Power Construction" />
+  </div>
+</section>
+
+<!-- ================= BENTO ================= -->
+<section class="section container">
+  <div class="section-head">
+    <div>
+      <h2>Kenapa TCC ITPLN</h2>
+      <p>Ekosistem belajar ketenagalistrikan yang terstruktur dan terpercaya.</p>
+    </div>
+  </div>
+  <div class="bento">
+    <div class="bento-card filled b-2x2">
+      <div>
+        <span class="card-eyebrow">Program Unggulan</span>
+        <h3>Sertifikasi Kompetensi Ketenagalistrikan</h3>
+        <p class="desc">Program bersertifikat yang diakui industri, dirancang bersama praktisi PLN dan akademisi ITPLN.</p>
+      </div>
+      <div class="stat-big">96%<span style="font-size:15px;font-weight:500;opacity:.8;display:block;font-family:Inter;">lulus &amp; tersertifikasi</span></div>
+    </div>
+    <div class="bento-card b-2x1 slate">
+      <span class="card-eyebrow">Fleksibel</span>
+      <h3>Kelas Online &amp; Offline</h3>
+      <p class="desc">Belajar daring via Zoom atau tatap muka langsung di workshop TCC / ITPLN.</p>
+    </div>
+    <div class="bento-card">
+      <span class="card-eyebrow">Instruktur</span>
+      <div class="stat-big" style="color:var(--navy-teal)">32</div>
+      <p class="desc">Tenaga ahli berpengalaman</p>
+    </div>
+    <div class="bento-card">
+      <span class="card-eyebrow">Topik</span>
+      <div class="stat-big" style="color:var(--navy-teal)">12</div>
+      <p class="desc">Bidang ketenagalistrikan</p>
+    </div>
+    <div class="bento-card b-2x1">
+      <span class="card-eyebrow">Konsultasi</span>
+      <h3>Sesi Konsultasi Ahli</h3>
+      <p class="desc">Diskusikan tantangan teknis Anda langsung dengan konsultan bersertifikat TCC.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= KELAS ================= -->
+<section class="section container" id="kelas">
+  <div class="section-head">
+    <div>
+      <h2>Kelas Unggulan</h2>
+      <p>Pilihan program pelatihan online &amp; offline terpopuler.</p>
+    </div>
+    <a class="link-arrow" href="#">Lihat semua kelas
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </a>
+  </div>
+  <div class="class-grid" id="class-grid"></div>
+</section>
+
+<!-- ================= TOPIK ================= -->
+<section class="section container" id="topik">
+  <div class="section-head">
+    <div>
+      <h2>Topik Pelatihan</h2>
+      <p>Jelajahi bidang ketenagalistrikan sesuai minat Anda.</p>
+    </div>
+  </div>
+  <div class="topic-grid" id="topic-grid"></div>
+</section>
+
+<!-- ================= KONSULTASI CTA ================= -->
+<section class="section container" id="konsultasi">
+  <div class="consult">
+    <div>
+      <h2>Butuh Konsultasi Teknis?</h2>
+      <p>Ajukan pertanyaan seputar kelistrikan industri, K3, atau smart grid langsung kepada tenaga ahli TCC. Gratis untuk peserta terdaftar.</p>
+    </div>
+    <div class="consult-right">
+      <a class="btn btn-primary" href="#">Ajukan Konsultasi</a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TENTANG (ringkas) ================= -->
+<section class="section container" id="tentang">
+  <div class="section-head"><div><h2>Tentang TCC</h2></div></div>
+  <div style="max-width:760px;color:var(--muted);font-size:17px;">
+    <strong style="color:var(--charcoal)">Training and Consultant Center (TCC)</strong> adalah lembaga di bawah naungan Institut Teknologi PLN yang berperan sebagai pusat pelatihan dan konsultasi berbasis kelistrikan dan hal-hal terapan yang berkaitan dengan PLN. Kami menghadirkan program pembelajaran berkualitas bagi masyarakat umum yang ingin mengembangkan kompetensi di bidang ketenagalistrikan.
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="container">
+    <div class="foot-grid">
+      <div>
+        <a href="#" class="logo" style="margin-bottom:14px;"><img src="logoITPLN.png" alt="Institut Teknologi PLN" /></a>
+        <p>Training and Consultant Center<br/>Institut Teknologi PLN</p>
+      </div>
+      <div>
+        <h5>Platform</h5>
+        <a href="#kelas">Kelas</a>
+        <a href="#topik">Topik</a>
+        <a href="#konsultasi">Konsultasi</a>
+      </div>
+      <div>
+        <h5>Perusahaan</h5>
+        <a href="#tentang">Tentang</a>
+        <a href="#">Instruktur</a>
+        <a href="#">Kontak</a>
+      </div>
+      <div>
+        <h5>Akun</h5>
+        <a href="#">Masuk</a>
+        <a href="#">Daftar</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 TCC ITPLN. Seluruh hak cipta dilindungi.</span>
+      <span>Kebijakan Privasi · Syarat &amp; Ketentuan</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ponytail: dummy data inline; swap for API fetch when backend ada
+const kelas = [
+  { topic: 'Kelistrikan Industri', title: 'Dasar Sistem Distribusi Tenaga Listrik', instruktur: 'Ir. Bambang Suryadi', jadwal: '12 Jul 2026 · 4 sesi', format: 'Online', price: 'Rp 750.000', free: false, quota: 'Sisa 8 kursi', thumb: '' },
+  { topic: 'K3 Ketenagalistrikan', title: 'Keselamatan Kerja Instalasi Tegangan Tinggi', instruktur: 'Dr. Siti Rahmawati', jadwal: '18 Jul 2026 · Workshop', format: 'Offline', price: 'Gratis', free: true, quota: 'Sisa 3 kursi', thumb: 'alt' },
+  { topic: 'Smart Grid', title: 'Pengenalan Teknologi Smart Grid Modern', instruktur: 'Prof. Andi Wijaya', jadwal: '25 Jul 2026 · 6 sesi', format: 'Online', price: 'Rp 1.200.000', free: false, quota: 'Sisa 15 kursi', thumb: 'alt2' },
+];
+const topik = [
+  { name: 'Kelistrikan Industri', count: '9 kelas', icon: 'M13 2 3 14h7l-1 8 10-12h-7z' },
+  { name: 'K3 Ketenagalistrikan', count: '6 kelas', icon: 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z' },
+  { name: 'Smart Grid', count: '5 kelas', icon: 'M3 3v18h18 M7 14l3-3 3 3 4-5' },
+  { name: 'Transmisi & Distribusi', count: '7 kelas', icon: 'M4 4h16v16H4z M4 12h16 M12 4v16' },
+  { name: 'Energi Terbarukan', count: '8 kelas', icon: 'M12 3v2 M12 19v2 M5 12H3 M21 12h-2 M12 8a4 4 0 100 8 4 4 0 000-8z' },
+  { name: 'Manajemen Energi', count: '4 kelas', icon: 'M3 3v18h18 M18 9l-5 5-3-3-4 4' },
+];
+
+const badge = (f, free) =>
+  `<span class="badge">${f}</span><span class="badge ${free?'free':'paid'}">${free?'Gratis':'Berbayar'}</span>`;
+const ico = (p) => `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="2">${p}</svg>`;
+
+document.getElementById('class-grid').innerHTML = kelas.map(k => `
+  <a class="class-card" href="#">
+    <div class="class-thumb ${k.thumb}"><div class="badges">${badge(k.format, k.free)}</div></div>
+    <div class="class-body">
+      <span class="topic-tag">${k.topic}</span>
+      <h3>${k.title}</h3>
+      <div class="class-meta">
+        <span>${ico('<circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/>')} ${k.instruktur}</span>
+        <span>${ico('<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>')} ${k.jadwal}</span>
+      </div>
+      <div class="class-foot">
+        <span class="price ${k.free?'free':''}">${k.price}</span>
+        <span class="quota">${k.quota}</span>
+      </div>
+    </div>
+  </a>`).join('');
+
+document.getElementById('topic-grid').innerHTML = topik.map(t => `
+  <a class="topic-item" href="#">
+    <div class="topic-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${'<path d="'+t.icon+'"/>'}</svg></div>
+    <div><h4>${t.name}</h4><p>${t.count}</p></div>
+  </a>`).join('');
+</script>
+</body>
+</html>
