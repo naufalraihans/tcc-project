@@ -62,15 +62,35 @@ export type Profile = {
 export type PendaftaranItem = {
 	pendaftaran_id: string;
 	kelas: { id: string; judul: string; slug: string; format: string };
+	user?: { id: string; full_name: string };
 	status: string;
 	tanggal_daftar: string;
 };
 
 export type Konsultasi = {
 	id: string;
+	user_id: string;
+	nama_pengirim: string;
 	topik_konsultasi: string;
 	pesan: string;
+	kontak: string;
 	status: string;
 	balasan: string;
+	admin_id: string | null;
 	created_at: string;
+	updated_at: string;
+};
+
+export type Transaksi = {
+	id: string;
+	user_id: string;
+	kelas_id: string;
+	pendaftaran_id: string | null;
+	midtrans_order_id: string;
+	midtrans_txn_id: string;
+	jumlah: number;
+	status: string;
+	metode_pembayaran: string;
+	created_at: string;
+	updated_at: string;
 };
