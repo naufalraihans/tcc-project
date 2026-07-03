@@ -13,10 +13,11 @@ type errSentinel string
 func (e errSentinel) Error() string { return string(e) }
 
 const (
-	ErrNotFound     = errSentinel("not found")
-	ErrKuotaPenuh   = errSentinel("kuota penuh")
-	ErrSudahDaftar  = errSentinel("sudah terdaftar")
-	ErrNotEnrolled  = errSentinel("belum terdaftar")
+	ErrNotFound    = errSentinel("not found")
+	ErrKuotaPenuh  = errSentinel("kuota penuh")
+	ErrSudahDaftar = errSentinel("sudah terdaftar")
+	ErrNotEnrolled = errSentinel("belum terdaftar")
+	ErrEmailTaken  = errSentinel("email sudah terdaftar")
 )
 
 type SettleResult struct {
@@ -56,6 +57,11 @@ type ProfileRepository interface {
 	Update(ctx context.Context, id, fullName, phone, avatarURL string) (domain.Profile, error)
 }
 
+type AuthRepository interface {
+	CreateUser(ctx context.Context, email, passwordHash, fullName string) (id, role string, err error)
+	Credentials(ctx context.Context, email string) (id, passwordHash, role string, err error)
+}
+
 type PendaftaranRepository interface {
 	KelasInfo(ctx context.Context, kelasID string) (domain.KelasDaftarInfo, error)
 	Exists(ctx context.Context, userID, kelasID string) (bool, error)
@@ -64,7 +70,9 @@ type PendaftaranRepository interface {
 	ListByUser(ctx context.Context, userID, status string) ([]domain.PendaftaranItem, error)
 	GetByUser(ctx context.Context, userID, id string) (domain.Pendaftaran, error)
 	ListAll(ctx context.Context, status string) ([]domain.PendaftaranItem, error)
-	UpdateStatus(ctx context.Context, id, status string) error
+	// UpdateStatus mengembalikan user_id bila pendaftaran baru saja transisi ke
+	// 'selesai' (untuk award XP sekali); "" jika bukan transisi selesai.
+	UpdateStatus(ctx context.Context, id, status string) (completedUserID string, err error)
 }
 
 type KonsultasiRepository interface {
@@ -96,5 +104,26 @@ type MateriRepository interface {
 	ListForUser(ctx context.Context, slug, userID string) ([]domain.Materi, error)
 	Create(ctx context.Context, kelasID string, m domain.Materi) (domain.Materi, error)
 	Update(ctx context.Context, id string, m domain.Materi) (domain.Materi, error)
+	Delete(ctx context.Context, id string) error
+}
+
+type GamifikasiRepository interface {
+	RecordActivity(ctx context.Context, userID string) error
+	GetProgress(ctx context.Context, userID string) (domain.UserProgress, error)
+	WeeklyActivity(ctx context.Context, userID string) ([]domain.HariAktif, error)
+	ListMisiHariIni(ctx context.Context, userID string) ([]domain.MisiHariIni, error)
+	IncrementByKode(ctx context.Context, userID, kode string) error
+	AwardXP(ctx context.Context, userID string, amount int) error
+	ListMisi(ctx context.Context) ([]domain.Misi, error)
+	CreateMisi(ctx context.Context, m domain.Misi) (domain.Misi, error)
+	UpdateMisi(ctx context.Context, id string, m domain.Misi) (domain.Misi, error)
+	DeleteMisi(ctx context.Context, id string) error
+}
+
+type PengumumanRepository interface {
+	ListActive(ctx context.Context, tipe string) ([]domain.Pengumuman, error)
+	ListAll(ctx context.Context) ([]domain.Pengumuman, error)
+	Create(ctx context.Context, p domain.Pengumuman) (domain.Pengumuman, error)
+	Update(ctx context.Context, id string, p domain.Pengumuman) (domain.Pengumuman, error)
 	Delete(ctx context.Context, id string) error
 }

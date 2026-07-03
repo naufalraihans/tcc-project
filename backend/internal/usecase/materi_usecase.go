@@ -8,12 +8,22 @@ import (
 	"tcc-itpln/backend/internal/repository"
 )
 
-type materiUsecase struct{ repo repository.MateriRepository }
+type materiUsecase struct {
+	repo repository.MateriRepository
+	gam  repository.GamifikasiRepository
+}
 
-func NewMateriUsecase(repo repository.MateriRepository) MateriUsecase { return &materiUsecase{repo} }
+func NewMateriUsecase(repo repository.MateriRepository, gam repository.GamifikasiRepository) MateriUsecase {
+	return &materiUsecase{repo, gam}
+}
 
 func (u *materiUsecase) ListForUser(ctx context.Context, slug, userID string) ([]domain.Materi, error) {
-	return u.repo.ListForUser(ctx, slug, userID)
+	out, err := u.repo.ListForUser(ctx, slug, userID)
+	if err == nil {
+		// ponytail: best-effort — gagal hook misi tidak menggagalkan akses materi
+		_ = u.gam.IncrementByKode(ctx, userID, "buka_materi")
+	}
+	return out, err
 }
 
 func (u *materiUsecase) Create(ctx context.Context, kelasID string, req dto.MateriRequest) (domain.Materi, error) {

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { supabase } from '$lib/supabase';
+	import { register } from '$lib/authApi';
 	import { goto } from '$app/navigation';
 
 	let fullName = $state('');
@@ -8,7 +8,6 @@
 	let confirm = $state('');
 	let loading = $state(false);
 	let err = $state('');
-	let ok = $state('');
 
 	async function submit(e: SubmitEvent) {
 		e.preventDefault();
@@ -22,23 +21,12 @@
 			return;
 		}
 		loading = true;
-		const { data, error } = await supabase.auth.signUp({
-			email,
-			password,
-			options: {
-				data: { full_name: fullName },
-				emailRedirectTo: `${location.origin}/auth/login`
-			}
-		});
-		loading = false;
-		if (error) {
-			err = error.message;
-			return;
-		}
-		if (data.session) {
+		try {
+			await register(fullName, email, password);
 			goto('/dashboard');
-		} else {
-			ok = 'Akun dibuat. Silakan cek email untuk konfirmasi sebelum masuk.';
+		} catch (e) {
+			err = (e as Error).message;
+			loading = false;
 		}
 	}
 </script>
@@ -49,7 +37,6 @@
 	<h1>Buat Akun Baru</h1>
 	<p class="sub">Daftar untuk mengikuti pelatihan TCC ITPLN.</p>
 	{#if err}<div class="alert">{err}</div>{/if}
-	{#if ok}<div class="ok">{ok}</div>{/if}
 	<label><span>Nama Lengkap</span><input type="text" bind:value={fullName} required /></label>
 	<label><span>Email</span><input type="email" bind:value={email} required /></label>
 	<label><span>Password</span><input type="password" bind:value={password} required /></label>

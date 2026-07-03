@@ -154,20 +154,20 @@ func (r *pendaftaranRepo) ListAll(ctx context.Context, status string) ([]domain.
 	return out, rows.Err()
 }
 
-func (r *pendaftaranRepo) UpdateStatus(ctx context.Context, id, newStatus string) error {
+func (r *pendaftaranRepo) UpdateStatus(ctx context.Context, id, newStatus string) (string, error) {
 	tx, err := r.db.Begin(ctx)
 	if err != nil {
-		return err
+		return "", err
 	}
 	defer tx.Rollback(ctx)
 
-	var cur, kelasID string
-	err = tx.QueryRow(ctx, `SELECT status, kelas_id FROM pendaftaran WHERE id=$1 FOR UPDATE`, id).Scan(&cur, &kelasID)
+	var cur, kelasID, userID string
+	err = tx.QueryRow(ctx, `SELECT status, kelas_id, user_id FROM pendaftaran WHERE id=$1 FOR UPDATE`, id).Scan(&cur, &kelasID, &userID)
 	if errors.Is(err, pgx.ErrNoRows) {
-		return ErrNotFound
+		return "", ErrNotFound
 	}
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	if cur == "aktif" && newStatus == "dibatalkan" {
@@ -175,7 +175,7 @@ func (r *pendaftaranRepo) UpdateStatus(ctx context.Context, id, newStatus string
 			UPDATE kelas SET peserta_terdaftar = GREATEST(peserta_terdaftar - 1, 0),
 			       status = CASE WHEN status = 'penuh' THEN 'aktif' ELSE status END
 			WHERE id = $1`, kelasID); err != nil {
-			return err
+			return "", err
 		}
 	}
 	if cur != "aktif" && newStatus == "aktif" {
@@ -184,10 +184,10 @@ func (r *pendaftaranRepo) UpdateStatus(ctx context.Context, id, newStatus string
 			       status = CASE WHEN kuota > 0 AND peserta_terdaftar + 1 >= kuota THEN 'penuh' ELSE status END
 			WHERE id = $1 AND (kuota = 0 OR peserta_terdaftar < kuota)`, kelasID)
 		if err != nil {
-			return err
+			return "", err
 		}
 		if tag.RowsAffected() == 0 {
-			return ErrKuotaPenuh
+			return "", ErrKuotaPenuh
 		}
 	}
 
@@ -195,7 +195,14 @@ func (r *pendaftaranRepo) UpdateStatus(ctx context.Context, id, newStatus string
 		UPDATE pendaftaran SET status = $1,
 		       tanggal_selesai = CASE WHEN $1 = 'selesai' THEN NOW() ELSE tanggal_selesai END
 		WHERE id = $2`, newStatus, id); err != nil {
-		return err
+		return "", err
 	}
-	return tx.Commit(ctx)
+	if err := tx.Commit(ctx); err != nil {
+		return "", err
+	}
+
+	if cur != "selesai" && newStatus == "selesai" {
+		return userID, nil // baru transisi ke selesai → award XP sekali
+	}
+	return "", nil
 }

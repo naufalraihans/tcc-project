@@ -2,46 +2,99 @@
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import { supabase } from '$lib/supabase';
+	import { currentToken, clearToken, apiAuth } from '$lib/authApi';
+	import {
+		LayoutDashboard,
+		GraduationCap,
+		MessagesSquare,
+		User,
+		LogOut,
+		Menu,
+		Compass
+	} from 'lucide-svelte';
+	import type { Profile } from '$lib/types';
 
 	let { children } = $props();
 	let ready = $state(false);
+	let mobileOpen = $state(false);
+	let profile = $state<Profile | null>(null);
+
+	const name = $derived(profile?.full_name || 'Pengguna');
+	const email = $derived(profile?.email ?? '');
 
 	const nav = [
-		['/dashboard', 'Dashboard'],
-		['/dashboard/kelas', 'Kelas Saya'],
-		['/dashboard/konsultasi', 'Konsultasi'],
-		['/dashboard/profil', 'Profil']
+		{ href: '/dashboard', label: 'Beranda', icon: LayoutDashboard },
+		{ href: '/dashboard/kelas', label: 'Kelas Saya', icon: GraduationCap },
+		{ href: '/dashboard/konsultasi', label: 'Konsultasi', icon: MessagesSquare },
+		{ href: '/dashboard/jelajah', label: 'Jelajahi Kelas', icon: Compass },
+		{ href: '/dashboard/profil', label: 'Profil', icon: User }
 	];
 
 	onMount(async () => {
-		const { data } = await supabase.auth.getSession();
-		if (!data.session) {
+		if (!currentToken()) {
 			goto('/auth/login?next=' + $page.url.pathname);
 			return;
+		}
+		try {
+			profile = await apiAuth<Profile>('/auth/me');
+		} catch {
+			/* keep defaults */
 		}
 		ready = true;
 	});
 
-	async function logout() {
-		await supabase.auth.signOut();
+	function logout() {
+		clearToken();
 		goto('/');
 	}
 </script>
 
 {#if ready}
 	<div class="shell">
-		<aside class="sidebar">
-			<a class="brand" href="/">TCC ITPLN</a>
+		{#if mobileOpen}
+			<button class="scrim" aria-label="Tutup menu" onclick={() => (mobileOpen = false)}></button>
+		{/if}
+
+		<aside class="sidebar" class:open={mobileOpen}>
+			<a class="brand" href="/"><img src="/logo-tcc.png" alt="TCC ITPLN" /></a>
+
 			<nav>
-				{#each nav as [href, label]}
-					<a {href} class:active={$page.url.pathname === href}>{label}</a>
+				{#each nav as n (n.href)}
+					{@const Icon = n.icon}
+					<a
+						href={n.href}
+						class="nav-item"
+						class:active={$page.url.pathname === n.href}
+						onclick={() => (mobileOpen = false)}
+					>
+						<Icon size={19} strokeWidth={2} />
+						<span>{n.label}</span>
+					</a>
 				{/each}
 			</nav>
-			<button class="logout" onclick={logout}>Keluar</button>
+
+			<div class="user-card">
+				<div class="avatar">{name[0]?.toUpperCase() ?? 'U'}</div>
+				<div class="user-meta">
+					<div class="user-name">{name}</div>
+					<div class="user-mail">{email}</div>
+				</div>
+				<button class="logout" aria-label="Keluar" onclick={logout}>
+					<LogOut size={17} strokeWidth={2} />
+				</button>
+			</div>
 		</aside>
-		<div class="content">
-			{@render children()}
+
+		<div class="main">
+			<header class="mobilebar">
+				<button class="menu-btn" aria-label="Menu" onclick={() => (mobileOpen = !mobileOpen)}>
+					<Menu size={22} />
+				</button>
+				<img class="mobile-logo" src="/logo-tcc.png" alt="TCC ITPLN" />
+			</header>
+			<main class="content">
+				{@render children()}
+			</main>
 		</div>
 	</div>
 {:else}
@@ -51,66 +104,152 @@
 <style>
 	.shell {
 		display: grid;
-		grid-template-columns: 260px 1fr;
+		grid-template-columns: 256px 1fr;
 		min-height: 100vh;
+		background: var(--off-white);
 	}
 	.sidebar {
-		background: var(--charcoal);
-		padding: 28px 20px;
+		background: var(--white);
+		border-right: 1px solid var(--border);
+		padding: 22px 16px 16px;
 		display: flex;
 		flex-direction: column;
-		gap: 8px;
+		gap: 4px;
 		position: sticky;
 		top: 0;
 		height: 100vh;
 	}
 	.brand {
-		font-family: 'Plus Jakarta Sans', sans-serif;
-		font-weight: 800;
-		font-size: 20px;
-		color: #fff;
-		margin-bottom: 24px;
+		display: block;
+		padding: 4px 8px 24px;
+	}
+	.brand img {
+		height: 38px;
+		width: auto;
+		display: block;
 	}
 	nav {
 		display: flex;
 		flex-direction: column;
 		gap: 4px;
+	}
+	.nav-item {
+		display: flex;
+		align-items: center;
+		gap: 13px;
+		padding: 11px 14px;
+		border-radius: 12px;
+		color: var(--cool-slate);
+		font-size: 14.5px;
+		font-weight: 500;
+		font-family: var(--font-sans);
+		transition:
+			background 0.18s ease,
+			color 0.18s ease;
+	}
+	.nav-item:hover {
+		background: var(--off-white);
+		color: var(--ink);
+	}
+	.nav-item.active {
+		background: rgba(26, 141, 178, 0.12);
+		color: var(--navy-teal);
+		font-weight: 600;
+	}
+	.user-card {
+		margin-top: auto;
+		display: flex;
+		align-items: center;
+		gap: 11px;
+		padding: 10px;
+		border-radius: 14px;
+		border: 1px solid var(--border);
+		background: var(--off-white);
+	}
+	.avatar {
+		width: 38px;
+		height: 38px;
+		border-radius: 50%;
+		flex-shrink: 0;
+		background: linear-gradient(135deg, var(--navy-teal), var(--sky-blue));
+		color: #fff;
+		display: grid;
+		place-items: center;
+		font-weight: 700;
+		font-size: 15px;
+	}
+	.user-meta {
+		min-width: 0;
 		flex: 1;
 	}
-	nav a {
-		padding: 11px 14px;
-		border-radius: var(--radius-sm);
-		color: rgba(255, 255, 255, 0.7);
-		font-weight: 500;
-		font-size: 15px;
+	.user-name {
+		font-size: 13.5px;
+		font-weight: 600;
+		color: var(--ink);
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
-	nav a:hover {
-		background: rgba(255, 255, 255, 0.06);
-		color: #fff;
-	}
-	nav a.active {
-		background: var(--navy-teal);
-		color: #fff;
+	.user-mail {
+		font-size: 12px;
+		color: var(--muted);
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 	.logout {
-		text-align: left;
-		padding: 11px 14px;
+		flex-shrink: 0;
 		border: none;
 		background: none;
-		color: rgba(255, 255, 255, 0.7);
-		font-family: 'Inter', sans-serif;
-		font-size: 15px;
-		font-weight: 500;
 		cursor: pointer;
-		border-radius: var(--radius-sm);
+		color: var(--muted);
+		padding: 7px;
+		border-radius: 9px;
+		display: grid;
+		place-items: center;
+		transition:
+			background 0.18s ease,
+			color 0.18s ease;
 	}
 	.logout:hover {
-		background: rgba(255, 255, 255, 0.06);
-		color: #fff;
+		background: rgba(220, 38, 38, 0.1);
+		color: #dc2626;
+	}
+	.main {
+		display: flex;
+		flex-direction: column;
+		min-width: 0;
+	}
+	.mobilebar {
+		display: none;
+		align-items: center;
+		gap: 14px;
+		height: 60px;
+		padding: 0 18px;
+		border-bottom: 1px solid var(--border);
+		background: var(--white);
+		position: sticky;
+		top: 0;
+		z-index: 20;
+	}
+	.mobile-logo {
+		height: 30px;
+	}
+	.menu-btn {
+		background: none;
+		border: none;
+		cursor: pointer;
+		color: var(--cool-slate);
+		padding: 4px;
+		display: inline-flex;
 	}
 	.content {
-		padding: 40px;
-		background: var(--off-white);
+		padding: 30px;
+		flex: 1;
+		min-width: 0;
+	}
+	.scrim {
+		display: none;
 	}
 	.loading {
 		min-height: 100vh;
@@ -118,38 +257,55 @@
 		place-items: center;
 		color: var(--muted);
 	}
+
 	:global(.content h1) {
-		font-size: 28px;
+		font-size: 26px;
+		font-weight: 800;
+		color: var(--ink);
 		margin-bottom: 6px;
+		letter-spacing: -0.02em;
 	}
 	:global(.content .lead) {
 		color: var(--muted);
-		margin-bottom: 28px;
+		margin-bottom: 26px;
+		font-size: 15px;
 	}
 	:global(.content .panel) {
-		background: #fff;
+		background: var(--white);
 		border: 1px solid var(--border);
-		border-radius: var(--radius);
-		padding: 24px;
+		border-radius: 16px;
+		padding: 22px;
 	}
-	@media (max-width: 820px) {
+
+	@media (max-width: 900px) {
 		.shell {
 			grid-template-columns: 1fr;
 		}
 		.sidebar {
-			position: static;
-			height: auto;
-			flex-direction: row;
-			flex-wrap: wrap;
-			align-items: center;
+			position: fixed;
+			z-index: 60;
+			width: 264px;
+			transform: translateX(-100%);
+			transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
 		}
-		nav {
-			flex-direction: row;
-			flex-wrap: wrap;
-			flex: 1 1 100%;
+		.sidebar.open {
+			transform: translateX(0);
+			box-shadow: 0 24px 60px rgba(12, 79, 106, 0.22);
+		}
+		.scrim {
+			display: block;
+			position: fixed;
+			inset: 0;
+			z-index: 55;
+			border: none;
+			cursor: pointer;
+			background: rgba(16, 21, 27, 0.4);
+		}
+		.mobilebar {
+			display: flex;
 		}
 		.content {
-			padding: 24px;
+			padding: 20px;
 		}
 	}
 </style>

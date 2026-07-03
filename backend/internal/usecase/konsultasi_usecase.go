@@ -8,20 +8,27 @@ import (
 	"tcc-itpln/backend/internal/repository"
 )
 
-type konsultasiUsecase struct{ repo repository.KonsultasiRepository }
+type konsultasiUsecase struct {
+	repo repository.KonsultasiRepository
+	gam  repository.GamifikasiRepository
+}
 
-func NewKonsultasiUsecase(repo repository.KonsultasiRepository) KonsultasiUsecase {
-	return &konsultasiUsecase{repo}
+func NewKonsultasiUsecase(repo repository.KonsultasiRepository, gam repository.GamifikasiRepository) KonsultasiUsecase {
+	return &konsultasiUsecase{repo, gam}
 }
 
 func (u *konsultasiUsecase) Create(ctx context.Context, userID string, req dto.KonsultasiRequest) (domain.Konsultasi, error) {
-	return u.repo.Create(ctx, domain.Konsultasi{
+	k, err := u.repo.Create(ctx, domain.Konsultasi{
 		UserID:          userID,
 		NamaPengirim:    req.NamaPengirim,
 		TopikKonsultasi: req.TopikKonsultasi,
 		Pesan:           req.Pesan,
 		Kontak:          req.Kontak,
 	})
+	if err == nil {
+		_ = u.gam.IncrementByKode(ctx, userID, "ajukan_konsultasi") // ponytail: best-effort
+	}
+	return k, err
 }
 
 func (u *konsultasiUsecase) ListSaya(ctx context.Context, userID string) ([]domain.Konsultasi, error) {

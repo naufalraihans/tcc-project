@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { supabase } from '$lib/supabase';
-	import { apiAuth } from '$lib/authApi';
+	import { login } from '$lib/authApi';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 
@@ -13,18 +12,13 @@
 		e.preventDefault();
 		loading = true;
 		err = '';
-		const { error } = await supabase.auth.signInWithPassword({ email, password });
-		if (error) {
-			err = 'Email atau password salah.';
-			loading = false;
-			return;
-		}
-		const next = $page.url.searchParams.get('next');
 		try {
-			const me = await apiAuth<{ role: string }>('/auth/me');
-			goto(me.role === 'admin' ? '/admin' : next || '/dashboard');
-		} catch {
-			goto(next || '/dashboard');
+			const res = await login(email, password);
+			const next = $page.url.searchParams.get('next');
+			goto(res.role === 'admin' ? '/admin' : next || '/dashboard');
+		} catch (e) {
+			err = (e as Error).message;
+			loading = false;
 		}
 	}
 </script>

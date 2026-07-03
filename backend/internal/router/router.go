@@ -27,6 +27,8 @@ func New(cfg config.Config, db *pgxpool.Pool) *gin.Engine {
 
 	profileRepo := repository.NewProfileRepository(db)
 	txRepo := repository.NewTransaksiRepository(db)
+	gamRepo := repository.NewGamifikasiRepository(db)
+	pengRepo := repository.NewPengumumanRepository(db)
 	midClient := midtrans.New(cfg.MidtransServerKey, cfg.MidtransIsProduction)
 
 	authMw := middleware.Auth(cfg.SupabaseJWTSecret, profileRepo.Role)
@@ -35,12 +37,14 @@ func New(cfg config.Config, db *pgxpool.Pool) *gin.Engine {
 	topikH := handler.NewTopikHandler(usecase.NewTopikUsecase(repository.NewTopikRepository(db)))
 	instrukturH := handler.NewInstrukturHandler(usecase.NewInstrukturUsecase(repository.NewInstrukturRepository(db)))
 	kelasH := handler.NewKelasHandler(usecase.NewKelasUsecase(repository.NewKelasRepository(db)))
-	authH := handler.NewAuthHandler(usecase.NewAuthUsecase(profileRepo))
-	pendaftaranH := handler.NewPendaftaranHandler(usecase.NewPendaftaranUsecase(repository.NewPendaftaranRepository(db), txRepo, profileRepo, midClient))
-	konsultasiH := handler.NewKonsultasiHandler(usecase.NewKonsultasiUsecase(repository.NewKonsultasiRepository(db)))
-	transaksiH := handler.NewTransaksiHandler(usecase.NewTransaksiUsecase(txRepo, midClient))
+	authH := handler.NewAuthHandler(usecase.NewAuthUsecase(profileRepo, repository.NewAuthRepository(db), gamRepo, cfg.SupabaseJWTSecret))
+	pendaftaranH := handler.NewPendaftaranHandler(usecase.NewPendaftaranUsecase(repository.NewPendaftaranRepository(db), txRepo, profileRepo, gamRepo, midClient))
+	konsultasiH := handler.NewKonsultasiHandler(usecase.NewKonsultasiUsecase(repository.NewKonsultasiRepository(db), gamRepo))
+	transaksiH := handler.NewTransaksiHandler(usecase.NewTransaksiUsecase(txRepo, gamRepo, midClient))
 	sertifikatH := handler.NewSertifikatHandler(usecase.NewSertifikatUsecase(repository.NewSertifikatRepository(db)))
-	materiH := handler.NewMateriHandler(usecase.NewMateriUsecase(repository.NewMateriRepository(db)))
+	materiH := handler.NewMateriHandler(usecase.NewMateriUsecase(repository.NewMateriRepository(db), gamRepo))
+	gamifikasiH := handler.NewGamifikasiHandler(usecase.NewGamifikasiUsecase(gamRepo, pengRepo, profileRepo))
+	pengumumanH := handler.NewPengumumanHandler(usecase.NewPengumumanUsecase(pengRepo))
 
 	api := r.Group("/api/v1")
 
@@ -51,7 +55,10 @@ func New(cfg config.Config, db *pgxpool.Pool) *gin.Engine {
 	api.GET("/kelas", kelasH.List)
 	api.GET("/kelas/:slug", kelasH.Detail)
 	api.GET("/sertifikat/verify/:nomor", sertifikatH.Verify)
+	api.GET("/pengumuman", pengumumanH.ListActive)
 	api.POST("/webhook/midtrans", transaksiH.Webhook)
+	api.POST("/auth/register", authH.Register)
+	api.POST("/auth/login", authH.Login)
 
 	auth := api.Group("")
 	auth.Use(authMw)
@@ -66,6 +73,9 @@ func New(cfg config.Config, db *pgxpool.Pool) *gin.Engine {
 		auth.GET("/konsultasi/saya", konsultasiH.ListSaya)
 		auth.GET("/transaksi/saya", transaksiH.ListSaya)
 		auth.GET("/sertifikat/saya", sertifikatH.ListSaya)
+		auth.GET("/me/dashboard", gamifikasiH.Beranda)
+		auth.GET("/me/progress", gamifikasiH.Progress)
+		auth.GET("/me/misi", gamifikasiH.Misi)
 	}
 
 	admin := api.Group("/admin")
@@ -99,6 +109,16 @@ func New(cfg config.Config, db *pgxpool.Pool) *gin.Engine {
 
 		admin.GET("/transaksi", transaksiH.ListAll)
 		admin.PATCH("/transaksi/:id/status", transaksiH.UpdateStatus)
+
+		admin.GET("/misi", gamifikasiH.ListMisi)
+		admin.POST("/misi", gamifikasiH.CreateMisi)
+		admin.PUT("/misi/:id", gamifikasiH.UpdateMisi)
+		admin.DELETE("/misi/:id", gamifikasiH.DeleteMisi)
+
+		admin.GET("/pengumuman", pengumumanH.ListAll)
+		admin.POST("/pengumuman", pengumumanH.Create)
+		admin.PUT("/pengumuman/:id", pengumumanH.Update)
+		admin.DELETE("/pengumuman/:id", pengumumanH.Delete)
 	}
 
 	return r

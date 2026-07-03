@@ -30,12 +30,12 @@
 	<div class="panel">Gagal memuat: {err}</div>
 {:else if items.length === 0}
 	<div class="panel">
-		Anda belum mendaftar kelas apa pun. <a href="/kelas">Jelajahi kelas</a>.
+		Anda belum mendaftar kelas apa pun. <a href="/dashboard/jelajah">Jelajahi kelas</a>.
 	</div>
 {:else}
 	<div class="list">
 		{#each items as it (it.pendaftaran_id)}
-			<a class="panel row" href="/kelas/{it.kelas.slug}">
+			<a class="panel row" href="/dashboard/jelajah/{it.kelas.slug}">
 				<div>
 					<div class="judul">{it.kelas.judul}</div>
 					<div class="meta">{it.kelas.format} · Terdaftar {tanggal(it.tanggal_daftar)}</div>

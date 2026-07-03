@@ -13,11 +13,12 @@ var ErrInvalidSignature = errSentinelUC("signature tidak valid")
 
 type transaksiUsecase struct {
 	repo repository.TransaksiRepository
+	gam  repository.GamifikasiRepository
 	mid  *midtrans.Client
 }
 
-func NewTransaksiUsecase(repo repository.TransaksiRepository, mid *midtrans.Client) TransaksiUsecase {
-	return &transaksiUsecase{repo, mid}
+func NewTransaksiUsecase(repo repository.TransaksiRepository, gam repository.GamifikasiRepository, mid *midtrans.Client) TransaksiUsecase {
+	return &transaksiUsecase{repo, gam, mid}
 }
 
 func (u *transaksiUsecase) ListSaya(ctx context.Context, userID string) ([]domain.Transaksi, error) {
@@ -45,6 +46,11 @@ func (u *transaksiUsecase) HandleWebhook(ctx context.Context, p dto.MidtransWebh
 		if res.KuotaFull {
 			_ = u.mid.Refund(p.OrderID)
 			return u.repo.MarkRefunded(ctx, p.OrderID)
+		}
+		if !res.AlreadyDone { // enroll berbayar baru sukses → hook misi daftar_kelas
+			if tx, err := u.repo.GetByOrderID(ctx, p.OrderID); err == nil {
+				_ = u.gam.IncrementByKode(ctx, tx.UserID, "daftar_kelas") // ponytail: best-effort
+			}
 		}
 		return nil
 	case "deny", "cancel", "expire":

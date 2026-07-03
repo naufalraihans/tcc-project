@@ -81,6 +81,73 @@ export type Konsultasi = {
 	updated_at: string;
 };
 
+export type DaftarResult = {
+	type: 'gratis' | 'berbayar';
+	pendaftaran_id?: string;
+	transaksi_id?: string;
+	snap_token?: string;
+	redirect_url?: string;
+	message?: string;
+};
+
+export type HariAktif = { tanggal: string; hari: string; aktif: boolean };
+
+export type Progress = {
+	xp: number;
+	level: number;
+	xp_ke_level_berikutnya: number;
+	streak_saat_ini: number;
+	streak_terpanjang: number;
+	hari_aktif_minggu_ini: number;
+	aktivitas_minggu: HariAktif[];
+};
+
+export type MisiItem = {
+	id: string;
+	kode: string;
+	judul: string;
+	deskripsi: string;
+	target: number;
+	xp_reward: number;
+	progres: number;
+	selesai: boolean;
+};
+
+export type MisiRingkasan = { selesai: number; total: number; items: MisiItem[] };
+
+export type Pengumuman = {
+	id: string;
+	judul: string;
+	isi: string;
+	tipe: string;
+	label_aksi: string;
+	url_aksi: string;
+	urutan: number;
+	aktif?: boolean;
+	mulai?: string | null;
+	selesai?: string | null;
+	created_at?: string;
+};
+
+export type MisiDef = {
+	id: string;
+	kode: string;
+	judul: string;
+	deskripsi: string;
+	tipe: string;
+	target: number;
+	xp_reward: number;
+	aktif: boolean;
+	created_at: string;
+};
+
+export type DashboardData = {
+	profil: { full_name: string; avatar_url: string };
+	progress: Progress;
+	misi: MisiRingkasan;
+	pengumuman: Pengumuman[];
+};
+
 export type Transaksi = {
 	id: string;
 	user_id: string;

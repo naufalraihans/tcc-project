@@ -32,7 +32,15 @@ type KelasUsecase interface {
 	Delete(ctx context.Context, id string) error
 }
 
+type AuthResult struct {
+	Token    string `json:"token"`
+	Role     string `json:"role"`
+	FullName string `json:"full_name"`
+}
+
 type AuthUsecase interface {
+	Register(ctx context.Context, req dto.RegisterRequest) (AuthResult, error)
+	Login(ctx context.Context, req dto.LoginRequest) (AuthResult, error)
 	Me(ctx context.Context, id string) (domain.Profile, error)
 	UpdateProfile(ctx context.Context, id string, req dto.ProfileRequest) (domain.Profile, error)
 }
@@ -80,4 +88,22 @@ type KonsultasiUsecase interface {
 	ListAll(ctx context.Context, status string) ([]domain.Konsultasi, error)
 	Detail(ctx context.Context, id string) (domain.Konsultasi, error)
 	Respond(ctx context.Context, id, adminID string, req dto.KonsultasiAdminRequest) (domain.Konsultasi, error)
+}
+
+type GamifikasiUsecase interface {
+	Beranda(ctx context.Context, userID string) (dto.DashboardResponse, error)
+	Progress(ctx context.Context, userID string) (dto.ProgressResponse, error)
+	MisiHariIni(ctx context.Context, userID string) (dto.MisiRingkasan, error)
+	ListMisi(ctx context.Context) ([]domain.Misi, error)
+	CreateMisi(ctx context.Context, req dto.MisiRequest) (domain.Misi, error)
+	UpdateMisi(ctx context.Context, id string, req dto.MisiRequest) (domain.Misi, error)
+	DeleteMisi(ctx context.Context, id string) error
+}
+
+type PengumumanUsecase interface {
+	ListActive(ctx context.Context, tipe string) ([]domain.Pengumuman, error)
+	ListAll(ctx context.Context) ([]domain.Pengumuman, error)
+	Create(ctx context.Context, req dto.PengumumanRequest) (domain.Pengumuman, error)
+	Update(ctx context.Context, id string, req dto.PengumumanRequest) (domain.Pengumuman, error)
+	Delete(ctx context.Context, id string) error
 }

@@ -28,11 +28,12 @@ type pendaftaranUsecase struct {
 	repo        repository.PendaftaranRepository
 	txRepo      repository.TransaksiRepository
 	profileRepo repository.ProfileRepository
+	gam         repository.GamifikasiRepository
 	mid         *midtrans.Client
 }
 
-func NewPendaftaranUsecase(repo repository.PendaftaranRepository, txRepo repository.TransaksiRepository, profileRepo repository.ProfileRepository, mid *midtrans.Client) PendaftaranUsecase {
-	return &pendaftaranUsecase{repo, txRepo, profileRepo, mid}
+func NewPendaftaranUsecase(repo repository.PendaftaranRepository, txRepo repository.TransaksiRepository, profileRepo repository.ProfileRepository, gam repository.GamifikasiRepository, mid *midtrans.Client) PendaftaranUsecase {
+	return &pendaftaranUsecase{repo, txRepo, profileRepo, gam, mid}
 }
 
 func (u *pendaftaranUsecase) Daftar(ctx context.Context, userID, email, kelasID string) (DaftarResult, error) {
@@ -70,6 +71,7 @@ func (u *pendaftaranUsecase) Daftar(ctx context.Context, userID, email, kelasID 
 	if err != nil {
 		return DaftarResult{}, err
 	}
+	_ = u.gam.IncrementByKode(ctx, userID, "daftar_kelas") // ponytail: best-effort
 	return DaftarResult{Type: "gratis", PendaftaranID: id, Message: "Berhasil mendaftar kelas"}, nil
 }
 
@@ -105,5 +107,12 @@ func (u *pendaftaranUsecase) ListAll(ctx context.Context, status string) ([]doma
 }
 
 func (u *pendaftaranUsecase) UpdateStatus(ctx context.Context, id, status string) error {
-	return u.repo.UpdateStatus(ctx, id, status)
+	completedUserID, err := u.repo.UpdateStatus(ctx, id, status)
+	if err != nil {
+		return err
+	}
+	if completedUserID != "" {
+		_ = u.gam.AwardXP(ctx, completedUserID, 100) // ponytail: best-effort, selesai kelas
+	}
+	return nil
 }

@@ -1,6 +1,11 @@
 DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 DROP FUNCTION IF EXISTS public.handle_new_user();
 
+DROP TABLE IF EXISTS public.pengumuman CASCADE;
+DROP TABLE IF EXISTS public.misi_user CASCADE;
+DROP TABLE IF EXISTS public.misi CASCADE;
+DROP TABLE IF EXISTS public.aktivitas_harian CASCADE;
+DROP TABLE IF EXISTS public.user_progress CASCADE;
 DROP TABLE IF EXISTS public.sertifikat CASCADE;
 DROP TABLE IF EXISTS public.transaksi CASCADE;
 DROP TABLE IF EXISTS public.konsultasi CASCADE;

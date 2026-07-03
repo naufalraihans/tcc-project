@@ -50,6 +50,11 @@
 	<div class="blob"></div>
 	<div class="lines"></div>
 
+	<div class="hero-mark" aria-hidden="true">
+		<span class="mark-tcc">TCC</span>
+		<span class="mark-sub">Training &amp; Consulting Center</span>
+	</div>
+
 	<div class="container hero-inner">
 		<span class="eyebrow rise" style="animation-delay:.05s">Institut Teknologi PLN</span>
 
@@ -85,27 +90,6 @@
 							<span class="mvalue">{s.value}</span>
 							<span class="mlabel">{s.label}</span>
 						</div>
-					{/each}
-				</div>
-			{/each}
-		</div>
-	</div>
-</section>
-
-<section class="trusted">
-	<div class="container">
-		<div class="trusted-label">
-			<span class="tline"></span>
-			Dipercaya oleh Instansi Engineering dan Administrasi
-			<span class="tline"></span>
-		</div>
-	</div>
-	<div class="logo-marquee">
-		<div class="marquee-track">
-			{#each [0, 1] as g}
-				<div class="logo-group" aria-hidden={g === 1}>
-					{#each partners as p}
-						<div class="logo-item"><img src={p.src} alt={p.alt} /></div>
 					{/each}
 				</div>
 			{/each}
@@ -175,6 +159,27 @@
 	</div>
 </section>
 
+<section class="trusted">
+	<div class="container">
+		<div class="trusted-label">
+			<span class="tline"></span>
+			Dipercaya oleh Instansi Engineering dan Administrasi
+			<span class="tline"></span>
+		</div>
+	</div>
+	<div class="logo-marquee">
+		<div class="marquee-track">
+			{#each [0, 1] as g}
+				<div class="logo-group" aria-hidden={g === 1}>
+					{#each partners as p}
+						<div class="logo-item"><img src={p.src} alt={p.alt} /></div>
+					{/each}
+				</div>
+			{/each}
+		</div>
+	</div>
+</section>
+
 <section class="section">
 	<div class="container">
 		<div class="cta">
@@ -201,11 +206,11 @@
 	}
 	.blob {
 		position: absolute;
-		right: -180px;
-		top: 44%;
+		right: -140px;
+		top: 42%;
 		transform: translateY(-50%);
-		width: 780px;
-		height: 780px;
+		width: 760px;
+		height: 760px;
 		border-radius: 50%;
 		background: radial-gradient(
 			circle at 32% 30%,
@@ -249,15 +254,48 @@
 			);
 		mask-image: radial-gradient(ellipse 80% 70% at 40% 45%, black 40%, transparent 100%);
 	}
+	.hero-mark {
+		position: absolute;
+		top: 46%;
+		left: 0;
+		right: 0;
+		margin: 0 auto;
+		max-width: var(--maxw);
+		padding: 0 24px;
+		transform: translateY(-50%);
+		text-align: right;
+		z-index: 1;
+		pointer-events: none;
+	}
+	.mark-tcc {
+		display: block;
+		font-family: var(--font-display);
+		font-weight: 800;
+		font-size: clamp(7rem, 17vw, 16rem);
+		line-height: 0.78;
+		letter-spacing: -0.05em;
+		color: transparent;
+		-webkit-text-stroke: 2px rgba(12, 79, 106, 0.22);
+	}
+	.mark-sub {
+		display: block;
+		font-family: var(--font-mono);
+		font-size: clamp(12px, 1.1vw, 16px);
+		letter-spacing: 0.14em;
+		color: var(--muted);
+		margin-top: 14px;
+		text-transform: uppercase;
+	}
+
 	.hero-inner {
 		position: relative;
 		z-index: 2;
-		padding: 140px 24px 60px;
+		padding: 150px 24px 60px;
 		width: 100%;
 	}
 	.hero-title {
 		margin-top: 26px;
-		font-size: clamp(2.8rem, 9vw, 7rem);
+		font-size: clamp(2.8rem, 8.5vw, 6.6rem);
 		font-weight: 800;
 		line-height: 0.94;
 	}
@@ -285,7 +323,7 @@
 		grid-template-columns: 1.1fr 0.9fr;
 		gap: 40px;
 		align-items: end;
-		margin-top: 48px;
+		margin-top: 52px;
 	}
 	.hero-desc {
 		font-size: 20px;
@@ -515,6 +553,11 @@
 		box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
 	}
 
+	@media (max-width: 1000px) {
+		.hero-mark {
+			display: none;
+		}
+	}
 	@media (max-width: 900px) {
 		.hero-bottom {
 			grid-template-columns: 1fr;
