@@ -3,6 +3,7 @@
 	import { page } from '$app/stores';
 	import Navbar from '$lib/components/Navbar.svelte';
 	import Footer from '$lib/components/Footer.svelte';
+	import ChatWidget from '$lib/components/ChatWidget.svelte';
 
 	let { children } = $props();
 
@@ -21,4 +22,5 @@
 		{@render children()}
 	</main>
 	<Footer />
+	<ChatWidget />
 {/if}

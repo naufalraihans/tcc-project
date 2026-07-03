@@ -16,6 +16,9 @@ type Config struct {
 	MidtransClientKey    string
 	MidtransIsProduction bool
 	CORSAllowedOrigins   string
+	BynaraBaseURL        string
+	BynaraAPIKey         string
+	BynaraModel          string
 }
 
 func Load() Config {
@@ -30,6 +33,9 @@ func Load() Config {
 		MidtransClientKey:    os.Getenv("MIDTRANS_CLIENT_KEY"),
 		MidtransIsProduction: os.Getenv("MIDTRANS_IS_PRODUCTION") == "true",
 		CORSAllowedOrigins:   getenv("CORS_ALLOWED_ORIGINS", "http://localhost:5173"),
+		BynaraBaseURL:        getenv("BYNARA_BASE_URL", "https://router.bynara.id/v1"),
+		BynaraAPIKey:         os.Getenv("BYNARA_API_KEY"),
+		BynaraModel:          getenv("BYNARA_MODEL", "mistral-medium-3-5"),
 	}
 }
 

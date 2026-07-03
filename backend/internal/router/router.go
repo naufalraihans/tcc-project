@@ -9,6 +9,7 @@ import (
 	"tcc-itpln/backend/internal/middleware"
 	"tcc-itpln/backend/internal/repository"
 	"tcc-itpln/backend/internal/usecase"
+	"tcc-itpln/backend/pkg/bynara"
 	"tcc-itpln/backend/pkg/midtrans"
 	"tcc-itpln/backend/pkg/utils"
 )
@@ -36,7 +37,9 @@ func New(cfg config.Config, db *pgxpool.Pool) *gin.Engine {
 
 	topikH := handler.NewTopikHandler(usecase.NewTopikUsecase(repository.NewTopikRepository(db)))
 	instrukturH := handler.NewInstrukturHandler(usecase.NewInstrukturUsecase(repository.NewInstrukturRepository(db)))
-	kelasH := handler.NewKelasHandler(usecase.NewKelasUsecase(repository.NewKelasRepository(db)))
+	kelasRepo := repository.NewKelasRepository(db)
+	kelasH := handler.NewKelasHandler(usecase.NewKelasUsecase(kelasRepo))
+	chatH := handler.NewChatHandler(usecase.NewChatUsecase(kelasRepo, bynara.New(cfg.BynaraBaseURL, cfg.BynaraAPIKey, cfg.BynaraModel)))
 	authH := handler.NewAuthHandler(usecase.NewAuthUsecase(profileRepo, repository.NewAuthRepository(db), gamRepo, cfg.SupabaseJWTSecret))
 	pendaftaranH := handler.NewPendaftaranHandler(usecase.NewPendaftaranUsecase(repository.NewPendaftaranRepository(db), txRepo, profileRepo, gamRepo, midClient))
 	konsultasiH := handler.NewKonsultasiHandler(usecase.NewKonsultasiUsecase(repository.NewKonsultasiRepository(db), gamRepo))
@@ -56,6 +59,7 @@ func New(cfg config.Config, db *pgxpool.Pool) *gin.Engine {
 	api.GET("/kelas/:slug", kelasH.Detail)
 	api.GET("/sertifikat/verify/:nomor", sertifikatH.Verify)
 	api.GET("/pengumuman", pengumumanH.ListActive)
+	api.POST("/chat", chatH.Send)
 	api.POST("/webhook/midtrans", transaksiH.Webhook)
 	api.POST("/auth/register", authH.Register)
 	api.POST("/auth/login", authH.Login)

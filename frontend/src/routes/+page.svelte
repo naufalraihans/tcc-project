@@ -1,5 +1,33 @@
 <script lang="ts">
-	const hlWord = 'ketenagalistrikan'.split('');
+	// taburan partikel hero (deterministik → aman untuk SSR/hydration)
+	const dotColors = ['#0c4f6a', '#1a8db2', '#6fc4dd', '#2e4a5a'];
+	let dotSeed = 7;
+	const dotRand = () => {
+		dotSeed = (dotSeed * 1664525 + 1013904223) % 4294967296;
+		return dotSeed / 4294967296;
+	};
+	const dots = Array.from({ length: 72 }, () => ({
+		top: +(dotRand() * 100).toFixed(2),
+		left: +(dotRand() * 100).toFixed(2),
+		len: +(6 + dotRand() * 12).toFixed(1),
+		rot: Math.floor(dotRand() * 360),
+		color: dotColors[Math.floor(dotRand() * dotColors.length)],
+		op: +(0.2 + dotRand() * 0.45).toFixed(2),
+		depth: +(8 + dotRand() * 30).toFixed(1) // parallax: makin besar makin jauh geraknya
+	}));
+
+	// posisi mouse relatif hero (-1..1), menggerakkan partikel (parallax)
+	let mx = $state(0);
+	let my = $state(0);
+	function heroMove(e: MouseEvent) {
+		const r = (e.currentTarget as HTMLElement).getBoundingClientRect();
+		mx = ((e.clientX - r.left) / r.width - 0.5) * 2;
+		my = ((e.clientY - r.top) / r.height - 0.5) * 2;
+	}
+	function heroLeave() {
+		mx = 0;
+		my = 0;
+	}
 
 	const stats = [
 		{ value: '6.042', label: 'peserta dalam 3 tahun' },
@@ -46,41 +74,32 @@
 	<meta name="description" content="Pusat pelatihan dan konsultasi Institut Teknologi PLN di bidang energi, teknologi berwawasan lingkungan, dan manajemen." />
 </svelte:head>
 
-<section class="hero">
-	<div class="blob"></div>
-	<div class="lines"></div>
-
-	<div class="hero-mark" aria-hidden="true">
-		<span class="mark-tcc">TCC</span>
-		<span class="mark-sub">Training &amp; Consulting Center</span>
+<section class="hero" role="presentation" onmousemove={heroMove} onmouseleave={heroLeave}>
+	<div class="particles" aria-hidden="true" style="--mx:{mx};--my:{my}">
+		{#each dots as d}
+			<span
+				class="dot"
+				style="top:{d.top}%;left:{d.left}%;width:{d.len}px;background:{d.color};opacity:{d.op};transform:translate(calc(var(--mx) * {d.depth}px), calc(var(--my) * {d.depth}px)) rotate({d.rot}deg)"
+			></span>
+		{/each}
 	</div>
 
 	<div class="container hero-inner">
-		<span class="eyebrow rise" style="animation-delay:.05s">Institut Teknologi PLN</span>
-
-		<h1 class="hero-title">
-			<span class="line rise" style="animation-delay:.15s">Kembangkan kompetensi</span>
-			<span class="line hl-line">
-				<span class="hl">
-					{#each hlWord as ch, i}
-						<span class="char" style="animation-delay:{350 + i * 35}ms">{ch}</span>
-					{/each}
-				</span>
-			</span>
+		<h1 class="hero-title rise" style="animation-delay:.15s">
+			Kembangkan kompetensi<br /><span class="hl">ketenagalistrikan</span>
 		</h1>
-
-		<div class="hero-bottom">
-			<p class="hero-desc rise" style="animation-delay:.3s">
-				Pusat pelatihan dan konsultasi berkelas internasional di bidang energi, teknologi berwawasan
-				lingkungan, dan manajemen — untuk individu maupun organisasi.
-			</p>
-			<div class="hero-cta rise" style="animation-delay:.4s">
-				<a class="btn btn-primary" href="/kelas">Lihat Program</a>
-				<a class="btn btn-ghost" href="/konsultasi">Ajukan Konsultasi</a>
-			</div>
+		<p class="hero-desc rise" style="animation-delay:.28s">
+			Pusat pelatihan dan konsultasi berkelas internasional di bidang energi, teknologi berwawasan
+			lingkungan, dan manajemen — untuk individu maupun organisasi.
+		</p>
+		<div class="hero-cta rise" style="animation-delay:.4s">
+			<a class="btn btn-primary" href="/kelas">Lihat Program</a>
+			<a class="btn btn-ghost" href="/konsultasi">Ajukan Konsultasi</a>
 		</div>
 	</div>
+</section>
 
+<section class="stats-strip">
 	<div class="marquee-wrap">
 		<div class="marquee-track">
 			{#each [0, 1] as g}
@@ -198,147 +217,74 @@
 <style>
 	.hero {
 		position: relative;
-		min-height: 92vh;
+		min-height: 88vh;
 		display: flex;
-		flex-direction: column;
+		align-items: center;
 		justify-content: center;
+		text-align: center;
 		overflow: hidden;
+		background:
+			radial-gradient(ellipse 70% 60% at 50% 38%, #ffffff 52%, transparent),
+			linear-gradient(180deg, #eef3f8, #ffffff 55%);
 	}
-	.blob {
-		position: absolute;
-		right: -140px;
-		top: 42%;
-		transform: translateY(-50%);
-		width: 760px;
-		height: 760px;
-		border-radius: 50%;
-		background: radial-gradient(
-			circle at 32% 30%,
-			var(--sky-blue),
-			var(--navy-teal) 58%,
-			transparent 72%
-		);
-		filter: blur(14px);
-		opacity: 0.32;
-		animation: floatblob 9s ease-in-out infinite;
-		pointer-events: none;
-	}
-	@keyframes floatblob {
-		0%,
-		100% {
-			transform: translateY(-50%) scale(1);
-		}
-		50% {
-			transform: translateY(-54%) scale(1.06);
-		}
-	}
-	.lines {
+	.particles {
 		position: absolute;
 		inset: 0;
 		pointer-events: none;
-		opacity: 0.6;
-		background-image:
-			repeating-linear-gradient(
-				to right,
-				transparent 0,
-				transparent calc(8.33% - 1px),
-				var(--border) calc(8.33% - 1px),
-				var(--border) 8.33%
-			),
-			repeating-linear-gradient(
-				to bottom,
-				transparent 0,
-				transparent calc(25% - 1px),
-				var(--border) calc(25% - 1px),
-				var(--border) 25%
-			);
-		mask-image: radial-gradient(ellipse 80% 70% at 40% 45%, black 40%, transparent 100%);
+		z-index: 0;
+		-webkit-mask-image: radial-gradient(ellipse 60% 56% at 50% 46%, transparent 30%, #000 76%);
+		mask-image: radial-gradient(ellipse 60% 56% at 50% 46%, transparent 30%, #000 76%);
 	}
-	.hero-mark {
+	.dot {
 		position: absolute;
-		top: 46%;
-		left: 0;
-		right: 0;
-		margin: 0 auto;
-		max-width: var(--maxw);
-		padding: 0 24px;
-		transform: translateY(-50%);
-		text-align: right;
-		z-index: 1;
-		pointer-events: none;
+		height: 3px;
+		border-radius: 2px;
+		transform-origin: center;
+		transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+		will-change: transform;
 	}
-	.mark-tcc {
-		display: block;
-		font-family: var(--font-display);
-		font-weight: 800;
-		font-size: clamp(7rem, 17vw, 16rem);
-		line-height: 0.78;
-		letter-spacing: -0.05em;
-		color: transparent;
-		-webkit-text-stroke: 2px rgba(12, 79, 106, 0.22);
-	}
-	.mark-sub {
-		display: block;
-		font-family: var(--font-mono);
-		font-size: clamp(12px, 1.1vw, 16px);
-		letter-spacing: 0.14em;
-		color: var(--muted);
-		margin-top: 14px;
-		text-transform: uppercase;
-	}
-
 	.hero-inner {
 		position: relative;
-		z-index: 2;
-		padding: 150px 24px 60px;
-		width: 100%;
+		z-index: 1;
+		padding: 90px 24px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
 	}
 	.hero-title {
-		margin-top: 26px;
-		font-size: clamp(2.8rem, 8.5vw, 6.6rem);
-		font-weight: 800;
-		line-height: 0.94;
-	}
-	.line {
-		display: block;
-	}
-	.hl-line {
-		margin-top: 0.08em;
+		font-size: clamp(2.6rem, 7.4vw, 5.6rem);
+		font-weight: 600;
+		line-height: 1.03;
+		letter-spacing: -0.03em;
+		color: var(--ink);
+		max-width: 16ch;
 	}
 	.hl {
-		position: relative;
-		display: inline-block;
 		background: linear-gradient(120deg, var(--navy-teal), var(--sky-blue));
 		-webkit-background-clip: text;
 		background-clip: text;
 		-webkit-text-fill-color: transparent;
 	}
-	.char {
-		display: inline-block;
-		white-space: pre;
-		animation: char-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
-	}
-	.hero-bottom {
-		display: grid;
-		grid-template-columns: 1.1fr 0.9fr;
-		gap: 40px;
-		align-items: end;
-		margin-top: 52px;
-	}
 	.hero-desc {
-		font-size: 20px;
+		font-size: 18px;
 		color: var(--muted);
 		max-width: 560px;
+		margin-top: 26px;
 	}
 	.hero-cta {
 		display: flex;
 		gap: 14px;
 		flex-wrap: wrap;
+		justify-content: center;
+		margin-top: 36px;
 	}
 	.hero-cta .btn {
-		height: 54px;
-		padding: 0 30px;
-		font-size: 16px;
+		height: 52px;
+		padding: 0 28px;
+		font-size: 15px;
+	}
+	.stats-strip {
+		background: var(--white);
 	}
 
 	.marquee-wrap {
@@ -553,16 +499,7 @@
 		box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
 	}
 
-	@media (max-width: 1000px) {
-		.hero-mark {
-			display: none;
-		}
-	}
 	@media (max-width: 900px) {
-		.hero-bottom {
-			grid-template-columns: 1fr;
-			gap: 28px;
-		}
 		.pilar-grid,
 		.unggulan-grid {
 			grid-template-columns: 1fr;

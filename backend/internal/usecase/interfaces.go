@@ -100,6 +100,10 @@ type GamifikasiUsecase interface {
 	DeleteMisi(ctx context.Context, id string) error
 }
 
+type ChatUsecase interface {
+	Reply(ctx context.Context, msgs []dto.ChatMessage) (string, error)
+}
+
 type PengumumanUsecase interface {
 	ListActive(ctx context.Context, tipe string) ([]domain.Pengumuman, error)
 	ListAll(ctx context.Context) ([]domain.Pengumuman, error)
